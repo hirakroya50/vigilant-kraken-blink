@@ -1,0 +1,30 @@
+name: Product 008 change request
+description: Submit a small burger-fixture change for review (branch/PR intake automation is pending).
+title: "[Change] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue is intake only, not an eligible work item. An authorized intake worker must create a work branch and draft PR; that worker is not implemented in the bootstrap milestone.
+  - type: input
+    id: work-id
+    attributes:
+      label: Work ID
+      description: Lowercase letters, numbers and hyphens; unique within the repository.
+      placeholder: burger-availability
+    validations:
+      required: true
+  - type: textarea
+    id: request
+    attributes:
+      label: Requested change
+      description: Describe one bounded change and why it is needed. Never include secrets or personal data.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable behavior to verify. Do not weaken protected tests or harness contracts.
+    validations:
+      required: true

@@ -1,0 +1,9 @@
+import { useNavigate } from "react-router-dom";
+import { UserRound, Store, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { accounts } from "@/lib/burger/domain";
+import { useShop, reportError } from "@/lib/burger/store";
+export default function Login() {
+  const { account, login } = useShop(); const navigate = useNavigate();
+  return <section className="page-wrap max-w-3xl"><p className="eyebrow">Try on a different hat</p><h1 className="page-title">Hello, good company.</h1><div className="my-6 rounded-2xl border bg-secondary p-5 text-sm leading-relaxed"><strong>Demo accounts, not production authentication.</strong> All data lives in this browser. Role checks demonstrate fixture behavior; local storage is not a security boundary. Switching accounts clears the bag, but keeps menu and order history.</div>{account && <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-5"><p>Signed in as <strong>{account.name}</strong> · {account.role}</p><Button variant="outline" className="rounded-full" onClick={() => { try { login(null); } catch (e) { reportError(e); } }}>Sign out</Button></div>}<div className="grid gap-4 sm:grid-cols-2">{accounts.map(a => <article key={a.id} className="rounded-3xl border bg-card p-6">{a.role === "customer" ? <UserRound className="text-primary" /> : a.role === "manager" ? <Store className="text-primary" /> : <ShieldCheck className="text-primary" />}<h2 className="mt-4 font-display text-2xl font-bold">{a.name}</h2><p className="mt-1 text-sm capitalize text-muted-foreground">Demo {a.role}</p><Button className="mt-5 w-full rounded-full" onClick={() => { try { login(a.id); navigate(a.role === "customer" ? "/menu" : "/manage/menu"); } catch (e) { reportError(e); } }}>Continue as {a.name.split(" ")[0]}</Button></article>)}</div></section>;
+}

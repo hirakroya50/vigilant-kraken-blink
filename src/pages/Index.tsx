@@ -1,19 +1,18 @@
-// Update this page (the content is just a fallback if you fail to update the page)
-
-import { MadeWithDyad } from "@/components/made-with-dyad";
-
-const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">
-          Start building your amazing project here!
-        </p>
-      </div>
-      <MadeWithDyad />
-    </div>
-  );
-};
-
-export default Index;
+import { Link } from "react-router-dom";
+import { ArrowRight, Flame, Heart, Sparkles, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { FoodImage, ProductCard } from "@/components/burger/ProductCard";
+import { burgerImage } from "@/lib/burger/domain";
+import { useShop } from "@/lib/burger/store";
+export default function Index() {
+  const { state } = useShop();
+  return <>
+    <section className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-12 md:grid-cols-2 md:px-10 md:py-16">
+      <div className="animate-rise"><p className="eyebrow"><span className="mr-2 inline-block h-2 w-2 rounded-full bg-primary" />Small-batch burgers. Big-time flavor.</p><h1 className="mt-6 font-display text-[4rem] font-extrabold leading-[.98] tracking-[-.05em] sm:text-7xl lg:text-[5.6rem]">Your new<br />happy <span className="text-primary">place.</span></h1><p className="mt-7 max-w-md text-lg leading-relaxed text-muted-foreground">Golden buns. Juicy patties. The good stuff.<br className="hidden lg:block" /> We’re bringing a little more joy to your everyday bite.</p><div className="mt-8 flex flex-wrap items-center gap-6"><Button asChild className="h-13 rounded-full px-7 py-6 text-base"><Link to="/menu">Explore the menu <ArrowRight className="ml-3" size={18} /></Link></Button><span className="flex items-center gap-2 text-sm font-semibold"><span className="text-primary"><Star fill="currentColor" size={16} /></span> Made fresh. Always.</span></div><div className="mt-10 flex items-center gap-3 border-t pt-6 text-xs text-muted-foreground"><span className="flex -space-x-2">{["🥑", "🍅", "🧀"].map(x => <span key={x} className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-background bg-secondary text-lg">{x}</span>)}</span><p>Real ingredients.<br /><strong className="text-foreground">Really good company.</strong></p></div></div>
+      <div className="relative pb-6 pl-4"><div className="absolute inset-0 left-8 top-6 rounded-[3rem] bg-secondary" /><FoodImage src={burgerImage} alt="Juicy cheeseburger with lettuce, tomato and golden sesame bun" className="relative h-[380px] w-full rounded-[2.5rem] object-cover sm:h-[500px]" /><div className="absolute -right-1 top-6 flex h-24 w-24 -rotate-12 flex-col items-center justify-center rounded-full border-4 border-background bg-primary text-primary-foreground sm:h-28 sm:w-28"><Flame size={22} /><span className="mt-1 text-center text-xs font-bold uppercase leading-tight tracking-wide">Fresh off<br />the grill</span></div><div className="absolute bottom-0 left-0 flex items-center gap-3 rounded-2xl border bg-card px-5 py-4 shadow-sm"><span className="text-3xl">🍔</span><div><p className="text-[10px] font-bold uppercase tracking-[.16em] text-muted-foreground">Meet your next craving</p><p className="font-display text-xl font-bold">The House Classic</p></div><span className="ml-3 font-bold text-primary">$10.90</span></div></div>
+    </section>
+    <div className="border-y bg-secondary"><div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-6 py-5 text-center text-sm font-semibold sm:grid-cols-3"><span className="flex items-center justify-center gap-2"><Flame size={17} className="text-primary" /> Smashed fresh, never frozen</span><span className="flex items-center justify-center gap-2"><Heart size={17} className="text-primary" /> Good ingredients, no shortcuts</span><span className="flex items-center justify-center gap-2"><Sparkles size={17} className="text-primary" /> A little something for everyone</span></div></div>
+    <section className="page-wrap"><div className="mb-8 flex flex-wrap items-end justify-between gap-4"><div><p className="eyebrow">The usuals, for a reason</p><h2 className="mt-3 font-display text-4xl font-bold tracking-tight">Crowd favorites.</h2></div><Link to="/menu" className="flex items-center gap-2 text-sm font-bold text-primary">See the full menu <ArrowRight size={16} /></Link></div><div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{state.menu.filter(i => i.available && i.category === "Burgers").slice(0, 3).map(item => <ProductCard key={item.id} item={item} />)}</div></section>
+    <section className="mx-auto max-w-7xl px-5 md:px-10"><div className="flex flex-col items-start justify-between gap-6 rounded-[2rem] bg-foreground p-8 text-background md:flex-row md:items-center md:p-12"><div><p className="text-xs font-bold uppercase tracking-[.2em] text-background/75">Your neighborhood, your burger</p><h2 className="mt-3 font-display text-4xl font-bold">Come hungry. Leave happy.</h2><p className="mt-3 text-background/80">A feel-good meal is only a few clicks away.</p></div><Button asChild className="rounded-full bg-background px-6 py-6 text-foreground hover:bg-secondary"><Link to="/menu">Let’s eat <ArrowRight size={17} className="ml-3" /></Link></Button></div></section>
+  </>;
+}
