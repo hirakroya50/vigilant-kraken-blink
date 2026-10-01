@@ -2,9 +2,11 @@
 
 ## Scope
 
-Implemented foundations cover configuration/App authentication, bounded diagnostics, manual intake and local protected Docker production/browser execution. The five worker lifecycles and trusted Tester publication remain pending. S3/Product 007/deployment are deferred. None of the 22 SOW cases is newly passed.
+Implemented foundations cover configuration/App authentication, bounded diagnostics, manual/issue intake, read-only reconstruction/event-file polling and local protected Docker production/browser execution. The five worker lifecycles and trusted Tester publication remain pending. S3/Product 007/deployment are deferred. None of the 22 SOW cases is newly passed.
 
 Repository: `hirakroya50/vigilant-kraken-blink`. The trusted operator is the user's Mac. The user reports setup validation complete; independently captured execution evidence remains separate. The provider is OpenAI with configurable `gpt-4.1`.
+
+Issue intake additionally needs Issues:read App access. No installation permission or protection setting is changed by this increment. Event-file wakeups are unauthenticated read-only hints, not a public webhook or approval authority.
 
 ## Local inputs
 
@@ -31,7 +33,9 @@ CLI operations are available through the existing harness script and compiled No
 | `discover` | Requires verified App authentication; lists own-repository work PRs. Does not grant role readiness. |
 | `discover --pat` | Explicitly labels limited-development PAT discovery. Cannot publish checks through the adapter. No automatic fallback from rejected App credentials. |
 | `lease-probe` | Writes unique transient lease keys only; adapter smoke evidence, not SOW evidence. |
-| `intake <request.json> --approve-write` | Creates/reconciles a manual request commit, work branch and draft PR using App auth and a renewable lease. No qualification or candidate execution. See [STAGE-A.md](STAGE-A.md). |
+| `intake <request.json> --approve-write` | Creates/reconciles a manual request commit, work branch and draft PR using App auth and a renewable lease. Reserved issue IDs require issue intake. No qualification or candidate execution. |
+| `intake-issue <number> --approve-write` | Fetches an open same-repository issue and captures request/source together on a work branch/draft PR. Conflicts reject rather than overwrite. Requires Issues:read. |
+| `reconcile [--once\|--watch] [--after work/id] [--event file.json]` | Read-only bounded/polling reconstruction from GitHub with event hints, orphan/closed detection, exact-blob validation and cursor continuation. Never grants role readiness or publishes qualification. See [INTAKE-RECONCILIATION.md](INTAKE-RECONCILIATION.md). |
 | `evidence` | Validates the 22-case registry shape; does not independently certify referenced live actions. |
 | `evidence --stage-a` | Selects cases 1–13, 21 and 22 while keeping all 22 registry records. Reports registry validation only. |
 | `runner-prepare <control-sha> <official-image@digest> --approve-reviewed-control-build` | Downloads/builds a frozen reviewed local runner image. Explicit operator-declared control review and download consent; no GitHub writes. |
@@ -56,4 +60,4 @@ Fixture CI relies on build for the offline unit step. It remains read-only devel
 
 ## Next gates
 
-Mac readiness is user-reported complete. Preserve actual diagnostic evidence and finish remaining retry/rate-limit and npm migration work. M1 needs human control/base-image review and measured execution/attack proof for the implemented protected runner. M2–M5 need issue intake, workers, human sessions, durable readiness, recovery and useful concurrency. S3/Product 007/deployment are deferred; no mocked promotion or successful stub may qualify Stage B.
+Mac readiness is user-reported complete. Preserve actual diagnostic evidence and finish remaining retry/rate-limit and npm migration work. M1 needs human control/base-image review and measured execution/attack proof for the implemented protected runner. Issue intake and read-only reconciliation now exist; M2–M5 still need authenticated dispatch, accepted-Fit/session provenance, branch locks, actual workers, human sessions, role recovery and useful concurrency. S3/Product 007/deployment are deferred; no mocked promotion or successful stub may qualify Stage B.

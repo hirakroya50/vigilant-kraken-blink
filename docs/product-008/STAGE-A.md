@@ -4,11 +4,11 @@
 
 Stage A comprises live acceptance cases 1–13, 21 and 22. S3, Product 007 routing, deployment, live production verification and rollback are deferred. Deferral does not turn their seven cases into passes or change full-SOW completion criteria.
 
-Implemented foundations include manual intake, guarded candidate-diff validation, Stage A-scoped reporting and a local protected Docker production/browser runner. They do **not** deliver the remaining five worker lifecycles or certify any live acceptance case.
+Implemented foundations include manual/issue intake, read-only GitHub reconstruction and event/poll wakeups, guarded candidate-diff validation, Stage A-scoped reporting and a local protected Docker production/browser runner. They do **not** deliver the remaining five worker lifecycles or certify any live acceptance case.
 
 ## Protected execution
 
-The user reports Mac setup validation complete. The next implemented layer exports exact-SHA Git blobs, checks protected control paths, prepares a reviewed dependency/browser image and runs separate network-disabled build/browser containers. Neither container has secrets, Git metadata, Docker socket or writable host mounts. Artifacts and browser evidence are bounded and validated before materialization. Local manifests do not publish GitHub qualification. See [PROTECTED-RUNNER.md](PROTECTED-RUNNER.md) for explicit review/image prerequisites, operations and live verification boundaries.
+The user reports Mac setup validation complete. The implemented runner exports exact-SHA Git blobs, checks protected control paths, prepares a reviewed dependency/browser image and runs separate network-disabled build/browser containers. Neither container has secrets, Git metadata, Docker socket or writable host mounts. Artifacts and browser evidence are bounded and validated before materialization. Local manifests do not publish GitHub qualification. See [PROTECTED-RUNNER.md](PROTECTED-RUNNER.md) for explicit review/image prerequisites, operations and live verification boundaries.
 
 ## Manual intake
 
@@ -34,7 +34,7 @@ Duplicate intake returns existing work without resetting progress or reopening a
 
 Output includes the current SHA, branch, request digest, PR URL/number/state and `qualification: not-qualified`. The returned SHA is intake identity, not accepted Fit/build/browser provenance. Intake does not execute candidate code, call OpenAI, publish qualification checks, change protections, or deploy.
 
-Issue-to-request conversion, automatic event wakeups and scheduled reconciliation remain pending; this implementation is explicitly manual intake only.
+Issue intake is now implemented through `intake-issue <number> --approve-write`, with request/source committed together and reserved issue work IDs. Read-only `reconcile` reconstructs GitHub records, distinguishes orphan/closed work, observes exact-SHA App checks without granting readiness, and supports bounded passes, local polling and untrusted event-file wakeups. Authenticated webhook transport and automatic Actions dispatch remain pending. See [INTAKE-RECONCILIATION.md](INTAKE-RECONCILIATION.md).
 
 ## Guarded candidate pushes
 
@@ -52,7 +52,7 @@ Do not convert offline tests or local Git attack tests into live case passes. Th
 
 1. Preserve the user-reported Mac readiness distinction; retain live diagnostic evidence, approved write exercises, remaining retry/rate-limit policy and reproducible dependency migration.
 2. Review a committed control revision and matching official base digest, prepare the implemented image and measure actual isolation/desktop/mobile execution and attacks.
-3. Issue intake/events, accepted-Fit lineage, sessions, branch locks and durable reconstruction.
+3. Verify issue/read-only reconciliation live, then implement authenticated event dispatch, accepted-Fit lineage, sessions, branch writer locks and durable role recovery.
 4. Complete Fitter/Developer/Tester/Triager/Fixer, including real human acceptance/edit/repair and trusted exact-SHA publication.
 5. Useful concurrent work and live crash/lease-loss/security proofs for all 15 cases.
 

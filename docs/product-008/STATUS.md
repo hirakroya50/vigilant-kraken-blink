@@ -41,9 +41,11 @@ Current requested scope is Stage A only; S3, Product 007 and production deployme
 - Added explicit live canary smoke and protected browser integration operations. They require reviewed committed control, a matching digest-pinned official Playwright base and explicit candidate selection; no implicit success or current-HEAD qualification.
 - Browser tests now collect console/page/HTTP/network evidence. Protected execution uses production output and image-pinned tests, not candidate dev/server/test scripts.
 - Local runner results do not publish GitHub qualification or certify Stage A. Runtime Docker/browser execution remains unmeasured in this implementation session. See [PROTECTED-RUNNER.md](PROTECTED-RUNNER.md).
-- Manual App-authenticated request intake creates a request commit, work branch and draft PR under a renewable repository/request lease. Replays preserve current progress/closed PRs; collisions and ambiguous writes are reconciled without force-updates.
-- Intake validates canonical request identity and regular Git blob mode before accepting existing work. It does not publish qualification.
-- Guarded pushes now require explicit application paths and raw exact-SHA diff validation; symlinks, executables, submodules and protected deletions disguised as renames are rejected. Git hooks/fsmonitor are disabled for control operations.
+- Manual/issue App-authenticated intake creates a request commit, work branch and draft PR under a renewable repository/request lease. Issue provenance is committed with requirements. Replays preserve current progress/closed PRs; changed issue content, collisions and ambiguous writes are rejected/reconciled without force-updates.
+- The GitHub issue form and explicit write-consented issue command are implemented. Issues:read is required; no App permission/settings change or automatic intake was performed.
+- Read-only reconstruction verifies exact Git blob bytes, distinguishes orphan/closed work, detects stale heads/source/diagnosis and observes same-SHA App checks without granting role readiness. It does not use Valkey or a workflow database.
+- Bounded/local polling and own-repository event-file wakeups re-fetch remote truth. Event files are untrusted hints, not authenticated webhooks or approval. Polling honors bounded provider backoff and never retries privileged writes. See [INTAKE-RECONCILIATION.md](INTAKE-RECONCILIATION.md).
+- Guarded pushes require explicit application paths and raw exact-SHA diff validation; symlinks, executables, submodules and protected deletions disguised as renames are rejected. Git hooks/fsmonitor are disabled for control operations.
 - `evidence --stage-a` reports the 15 Stage A cases without deleting the seven deferred cases or pretending registry validation verifies live evidence.
 - Offline intake, registry and local Git attack tests are added. Verification results are recorded in LOCAL-VERIFICATION.md after execution.
 - See [STAGE-A.md](STAGE-A.md) for operations, recovery and remaining boundaries.
@@ -51,7 +53,7 @@ Current requested scope is Stage A only; S3, Product 007 and production deployme
 ## Implementation still pending
 
 - M1: human review of committed control and base image digest, actual Docker isolation/browser runs, attack proof and artifact/evidence measurement. Runner code exists; execution is not yet measured here.
-- M2: issue intake (manual intake exists), accepted-Fit/provenance readiness, events/reconciliation, branch locks and durable role recovery.
+- M2: live issue/reconstruction validation, authenticated event dispatch, accepted-Fit/provenance readiness, branch writer locks and durable role recovery. Manual/issue intake and read-only reconstruction/polling are implemented; neither authenticates human completion.
 - M3–M4: all five role lifecycles, bounded reviewed role AI, human claim/acknowledge/complete, trusted Tester publication/lease-loss cancellation, read-only diagnosis and stale-safe repair. Reserved role commands still exit blocked; no fake checks or handoffs.
 - M5: useful overlapping work, actual GitHub/Valkey recovery/security proof and the 15 Stage A live cases. Protection configuration requires separate explicit approval.
 - M6–M7: S3, Product 007 integration and production deployment are excluded from the current increment and deferred. Full-SOW acceptance still requires their seven cases later.

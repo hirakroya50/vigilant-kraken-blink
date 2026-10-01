@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import type { z } from "zod";
 import { requestSchema, shaSchema } from "../contracts/index.js";
 import type { GitHub } from "../git/github.js";
+import { issueSourceSchema, sourceContent, type IssueSource } from "./issue.js";
 
 export class IntakeError extends Error {}
 export type IntakeResult = {
@@ -20,9 +21,14 @@ function notFound(error: unknown) {
 }
 
 /** GitHub branch/request/PR state is durable; the lease only coordinates concurrent writers. */
-export async function intake(github: GitHub, input: z.infer<typeof requestSchema>, lease: IntakeAuthority): Promise<IntakeResult> {
+export async function intake(github: GitHub, input: z.infer<typeof requestSchema>, lease: IntakeAuthority, source?: IssueSource): Promise<IntakeResult> {
   const packet = intakePacket(input);
   const { api, owner, repo } = github;
+  const sourcePath = `changes/${packet.request.id}/source.json`;
+  if (source) {
+    source = issueSourceSchema.parse(source);
+    if (packet.request.id !== `issue-${source.number}` || source.repository !== `${owner}/${repo}`.toLowerCase() || source.url !== `https://github.com/${source.repository}/issues/${source.number}`) throw new IntakeError("Issue provenance does not match work identity or repository.");
+  } else if (packet.request.id.startsWith("issue-")) throw new IntakeError("Reserved issue work IDs require issue-based intake and provenance.");
   const repository = (await api.repos.get({ owner, repo })).data;
   if (repository.full_name.toLowerCase() !== `${owner}/${repo}`.toLowerCase() || repository.archived || repository.disabled) throw new IntakeError("Repository is not available for intake.");
   const base = repository.default_branch;
@@ -33,13 +39,17 @@ export async function intake(github: GitHub, input: z.infer<typeof requestSchema
     const baseRef = await api.git.getRef({ owner, repo, ref: `heads/${base}` });
     const baseSha = shaSchema.parse(baseRef.data.object.sha);
     const baseCommit = await api.git.getCommit({ owner, repo, commit_sha: baseSha });
-    // Never overwrite an existing request inherited from the default branch.
-    try {
-      await api.repos.getContent({ owner, repo, path: packet.path, ref: baseSha });
-      throw new IntakeError("Request identity already exists on the default branch; use its original work branch.");
-    } catch (error) { if (!notFound(error)) throw error; }
+    // Never overwrite request or provenance inherited from the default branch.
+    for (const path of source ? [packet.path, sourcePath] : [packet.path]) {
+      try {
+        await api.repos.getContent({ owner, repo, path, ref: baseSha });
+        throw new IntakeError("Request identity already exists on the default branch; use its original work branch.");
+      } catch (error) { if (!notFound(error)) throw error; }
+    }
     await github.assertWriteAuthority(lease);
-    const tree = await api.git.createTree({ owner, repo, base_tree: baseCommit.data.tree.sha, tree: [{ path: packet.path, mode: "100644", type: "blob", content: packet.content }] });
+    const records: { path: string; mode: "100644"; type: "blob"; content: string }[] = [{ path: packet.path, mode: "100644", type: "blob", content: packet.content }];
+    if (source) records.push({ path: sourcePath, mode: "100644", type: "blob", content: sourceContent(source) });
+    const tree = await api.git.createTree({ owner, repo, base_tree: baseCommit.data.tree.sha, tree: records });
     await github.assertWriteAuthority(lease);
     const commit = await api.git.createCommit({ owner, repo, message: `SAFI request ${packet.request.id}`, tree: tree.data.sha, parents: [baseSha] });
     await github.assertWriteAuthority(lease);
@@ -60,6 +70,15 @@ export async function intake(github: GitHub, input: z.infer<typeof requestSchema
   let remote: unknown;
   try { remote = JSON.parse(Buffer.from(record.content, "base64").toString("utf8")); } catch { throw new IntakeError("Work branch request is invalid JSON."); }
   if (intakePacket(remote).digest !== packet.digest) throw new IntakeError("Work ID already belongs to a different request; no branch was overwritten.");
+  if (source) {
+    const entry = tree.data.tree.find(file => file.path === sourcePath);
+    if (!entry || entry.type !== "blob" || entry.mode !== "100644") throw new IntakeError("Issue request provenance is missing or not a regular blob.");
+    const stored = (await api.repos.getContent({ owner, repo, path: sourcePath, ref: sha })).data;
+    if (Array.isArray(stored) || stored.type !== "file" || !("content" in stored) || stored.encoding !== "base64" || stored.size > 16384 || stored.sha !== entry.sha) throw new IntakeError("Issue provenance is not a bounded regular file.");
+    let original: IssueSource;
+    try { original = issueSourceSchema.parse(JSON.parse(Buffer.from(stored.content, "base64").toString("utf8"))); } catch { throw new IntakeError("Stored issue provenance is invalid."); }
+    if (sourceContent(original) !== sourceContent(source)) throw new IntakeError("Issue body or identity changed; existing work was not overwritten. Human review or a new issue is required.");
+  }
   const findPR = async () => {
     const pulls = await api.paginate(api.pulls.list, { owner, repo, state: "all", head: `${owner}:${packet.branch}`, per_page: 100 });
     const matches = pulls.filter(pr => pr.head.ref === packet.branch && pr.head.repo?.full_name.toLowerCase() === `${owner}/${repo}`.toLowerCase());
@@ -70,7 +89,7 @@ export async function intake(github: GitHub, input: z.infer<typeof requestSchema
   if (!pull) {
     await github.assertWriteAuthority(lease);
     try {
-      pull = (await api.pulls.create({ owner, repo, head: packet.branch, base, draft: true, title: `[SAFI ${packet.request.id}] ${packet.request.title}`, body: `Request record: \`${packet.path}\`\n\nSHA-256: \`${packet.digest}\`\n\nHuman Fit acceptance and fresh exact-SHA qualification are required. Intake does not approve implementation or tests.` })).data;
+      pull = (await api.pulls.create({ owner, repo, head: packet.branch, base, draft: true, title: `[SAFI ${packet.request.id}] ${packet.request.title}`, body: `Request record: \`${packet.path}\`\n\nSHA-256: \`${packet.digest}\`${source ? `\n\nSource issue: ${source.url}` : ""}\n\nHuman Fit acceptance and fresh exact-SHA qualification are required. Intake does not approve implementation or tests.` })).data;
     } catch (error) {
       pull = await findPR();
       if (!pull) throw error;

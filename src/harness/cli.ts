@@ -7,14 +7,26 @@ import { loadConfiguration } from "./config/index.js";
 import { doctor } from "./doctor.js";
 import { safeFailure } from "./logging/index.js";
 import { proposeCommand } from "./ai/propose-command.js";
-import { intakeCommand } from "./intake/command.js";
+import { intakeCommand, issueIntakeCommand } from "./intake/command.js";
 import { inspectRegistry } from "./evidence/registry.js";
 import { prepareRunner, readRunnerRecord } from "./testing/prepare.js";
 import { runProtected } from "./testing/run.js";
 import { runnerSmoke } from "./testing/smoke.js";
+import { reconcileCommand, reconciliationOptions } from "./work/command.js";
+import { IntakeError } from "./intake/index.js";
 
 const [command, ...args] = process.argv.slice(2);
 async function main() {
+  if (command === "intake-issue") {
+    if (args.length !== 2 || args[1] !== "--approve-write" || String(Number(args[0])) !== args[0] || !Number.isSafeInteger(Number(args[0])) || Number(args[0]) < 1) throw new IntakeError("Issue intake requires a positive issue number and explicit --approve-write.");
+    await issueIntakeCommand(await loadConfiguration(), Number(args[0]));
+    return;
+  }
+  if (command === "reconcile") {
+    const options = reconciliationOptions(args);
+    await reconcileCommand(await loadConfiguration(), options);
+    return;
+  }
   if (command === "runner-prepare") {
     if (args.length !== 3 || args[2] !== "--approve-reviewed-control-build") throw new Error("Runner image preparation requires reviewed control SHA, digest-pinned official base image and explicit approval.");
     console.log(JSON.stringify(await prepareRunner(process.cwd(), args[0], args[1]), null, 2));
@@ -98,7 +110,7 @@ async function main() {
     process.exitCode = 2;
     return;
   }
-  console.log("Safi Product 008 foundation\nCommands: doctor [--ai-probe], ai-propose <input.json> --approve-cost, intake <request.json> --approve-write, evidence [registry] [--stage-a], discover [--pat], lease-probe\nProtected execution: runner-prepare <control-sha> <official-image@digest> --approve-reviewed-control-build; runner-smoke <record.json>; runner-test <candidate-sha> <record.json>\nReserved worker modes (currently blocked): fitter, developer, tester, triager, fixer, release\nThis milestone is not Stage A completion.");
+  console.log("Safi Product 008 foundation\nCommands: doctor [--ai-probe], ai-propose <input.json> --approve-cost, intake <request.json> --approve-write, intake-issue <number> --approve-write, reconcile [--once|--watch] [--after work/id] [--event file.json], evidence [registry] [--stage-a], discover [--pat], lease-probe\nProtected execution: runner-prepare <control-sha> <official-image@digest> --approve-reviewed-control-build; runner-smoke <record.json>; runner-test <candidate-sha> <record.json>\nReserved worker modes (currently blocked): fitter, developer, tester, triager, fixer, release\nThis milestone is not Stage A completion.");
   if (command) process.exitCode = 2;
 }
 main().catch(error => { console.error(safeFailure(error)); process.exitCode = 1; });

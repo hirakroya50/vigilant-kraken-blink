@@ -1,0 +1,25 @@
+name: SAFI work request
+description: Describe a Product 008 work request and its acceptance criteria.
+title: ""
+body:
+  - type: markdown
+    attributes:
+      value: "This issue is a request, not a work item or approval. Authorized intake creates a work branch and draft PR. Do not include credentials."
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the requested application change.
+      placeholder: Improve menu search so customers can find burgers by name.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Use one Markdown bullet per observable criterion. These are requirements, not recorded test passes.
+      placeholder: |
+        - Matching items appear when entering a burger name.
+        - Clearing the search restores all available categories.
+    validations:
+      required: true

@@ -32,11 +32,11 @@ Browser source stays in `src/pages`, `src/components/burger`, and `src/lib/burge
 | `test:integration` | Opt-in live Valkey and Docker runner tests; explicit inputs required, otherwise skipped |
 | `test:runner:live` | Live pinned Docker isolation smoke and exact-SHA protected production/browser execution |
 | `test:browser` | Local development-server Playwright mobile/desktop fixture tests |
-| `harness` | CLI: `doctor`, `ai-propose`, manual `intake`, `evidence` (`--stage-a` scope), App-first `discover`, `lease-probe`, `runner-prepare`, `runner-smoke`, `runner-test` |
+| `harness` | CLI: `doctor`, `ai-propose`, `intake`, `intake-issue`, read-only `reconcile`, `evidence` (`--stage-a` scope), App-first `discover`, `lease-probe`, `runner-prepare`, `runner-smoke`, `runner-test` |
 
 Worker commands currently return blocked (exit 2), never synthetic successes. The evidence command exits 2 until the selected cases have schema-valid recorded passes; registry validation does not independently verify referenced live evidence. The lease probe tests a real endpoint but labels its scope adapter-smoke-only, not SOW completion. GitHub App SDK authentication now loads the external owner-only RSA PEM and refreshes installation tokens. Live credential verification still requires the trusted runner.
 
-Manual intake requires explicit write consent and creates/reconciles a request commit, work branch and draft PR; it does not approve Fit or tests. Read [Stage A boundaries and recovery](docs/product-008/STAGE-A.md).
+Manual/issue intake requires explicit write consent and creates/reconciles a request commit, work branch and draft PR; it does not approve Fit or tests. Issue source is captured with requirements. Read-only reconciliation reconstructs exact GitHub records without Valkey, handles event-file hints/local polling and never grants role readiness from check names alone. See [intake/reconciliation boundaries](docs/product-008/INTAKE-RECONCILIATION.md) and [Stage A recovery](docs/product-008/STAGE-A.md).
 
 `ai-propose` requires explicit cost consent and produces an unapproved local draft only. Read [configuration](docs/product-008/CONFIGURATION.md) and [AI limits/review boundaries](docs/product-008/AI.md) before using it. Accepted Fit/diagnosis checks and five-role lifecycles are not implemented.
 
