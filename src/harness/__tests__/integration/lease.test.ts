@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { setTimeout as delay } from "node:timers/promises";
 import { randomUUID } from "node:crypto";
-import { connectValkey, Lease } from "../coordination/lease.js";
+import { connectValkey, Lease } from "../../coordination/lease.js";
 
 test("real Valkey collision, expiry, and owner-safe recovery", { skip: !process.env.VALKEY_URL, timeout: 15000 }, async () => {
   const redis = connectValkey(process.env.VALKEY_URL!);

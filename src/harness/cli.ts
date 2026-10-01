@@ -2,9 +2,18 @@ import { readFile } from "node:fs/promises";
 import { connectValkey, Lease } from "./coordination/lease.js";
 import { evidenceSchema, roleSchema } from "./contracts/index.js";
 import { GitHub } from "./git/github.js";
+import { GitHubApp } from "./auth/github-app.js";
+import { loadConfiguration } from "./config/index.js";
+import { doctor } from "./doctor.js";
+import { safeFailure } from "./logging/index.js";
 
 const [command, ...args] = process.argv.slice(2);
 async function main() {
+  if (command === "doctor") {
+    if (args.some(arg => arg !== "--ai-probe")) throw new Error("Unknown doctor argument.");
+    process.exitCode = await doctor(await loadConfiguration(), args.includes("--ai-probe")) ? 0 : 2;
+    return;
+  }
   if (command === "evidence") {
     const registry = JSON.parse(await readFile(args[0] ?? "docs/product-008/evidence.json", "utf8"));
     if (!Array.isArray(registry) || registry.length !== 22) throw new Error("Evidence registry must contain all 22 cases.");
@@ -15,12 +24,24 @@ async function main() {
     return;
   }
   if (command === "discover") {
-    const github = new GitHub(process.env.GITHUB_REPOSITORY ?? "", process.env.GITHUB_TOKEN ?? "");
+    const config = await loadConfiguration();
+    const pat = args.length === 1 && args[0] === "--pat";
+    if (args.length && !pat) throw new Error("Unknown discovery argument.");
+    let github: GitHub;
+    if (pat) {
+      console.log(JSON.stringify({ authentication: "limited-development-PAT", qualificationAuthority: false }));
+      github = new GitHub(config.GITHUB_REPOSITORY, config.GITHUB_TOKEN ?? "");
+    } else {
+      const app = await GitHubApp.create(config);
+      await app.verify();
+      github = new GitHub(config.GITHUB_REPOSITORY, app.api, () => app.verify());
+    }
     console.log(JSON.stringify(await github.discover(), null, 2));
     return;
   }
   if (command === "lease-probe") {
-    const redis = connectValkey(process.env.VALKEY_URL ?? "");
+    const config = await loadConfiguration();
+    const redis = connectValkey(config.VALKEY_URL ?? "");
     // Do not expose connection URLs (which may contain passwords) in output.
     redis.on("error", () => {});
     let lease: Lease | null = null;
@@ -42,7 +63,7 @@ async function main() {
     process.exitCode = 2;
     return;
   }
-  console.log("Safi Product 008 foundation\nCommands: evidence [registry], discover, lease-probe\nReserved worker modes (currently blocked): fitter, developer, tester, triager, fixer, release\nThis milestone is not Stage A completion.");
+  console.log("Safi Product 008 foundation\nCommands: doctor [--ai-probe], evidence [registry], discover [--pat], lease-probe\nReserved worker modes (currently blocked): fitter, developer, tester, triager, fixer, release\nThis milestone is not Stage A completion.");
   if (command) process.exitCode = 2;
 }
-main().catch(() => { console.error("Harness operation failed. Check input schema, authorization, and infrastructure configuration. Secret-bearing provider errors are intentionally suppressed."); process.exitCode = 1; });
+main().catch(error => { console.error(safeFailure(error)); process.exitCode = 1; });

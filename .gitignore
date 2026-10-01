@@ -15,6 +15,8 @@ dist-harness
 .env
 .env.*
 !.env.example
+*.pem
+*.key
 
 # Editor directories and files
 .vscode/*

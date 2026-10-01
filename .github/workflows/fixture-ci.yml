@@ -23,6 +23,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: npm run typecheck
       - run: npm run build
+      - run: npm run test:harness
       - run: npm exec playwright install --with-deps chromium
       - run: npm run test:browser
       - uses: actions/upload-artifact@v4

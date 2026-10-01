@@ -1,49 +1,56 @@
 # Product 008 — partial delivery, not Stage A completion
 
-## Delivered in this milestone
+## Confirmed context
 
-- Responsive Bun & Ember SPA with all seven routes, demo accounts (two customers, manager, owner), role-checked service mutations, validated/versioned browser persistence, reset, integer prices, order snapshots, idempotent simulated checkout, and current-menu revalidation.
-- Browser acceptance source for desktop and mobile Chromium; external image/font requests are isolated in tests.
-- Separate strict Node build. Versioned Request/Fit/diagnosis/check/evidence contracts and protected-path policy.
-- GitHub REST adapter: own-repository work-PR discovery, full-SHA heads/check reads, lease-guarded check publication and evidence identity conflict checks.
-- Real Valkey protocol adapter: atomic owner-token acquisition, TTL, compare-owner renewal/release, heartbeat and loss detection. Optional live integration test skips if no Valkey URL exists.
-- Unique detached worktrees outside the trusted repository; ancestral, expected-head branch pushes.
-- Candidate-specific discovery signals requiring an explicitly trusted GitHub App ID. These are discovery helpers, NOT the final readiness gate.
-- Diagnostic CLI: evidence validation, GitHub discovery, and live lease smoke probe.
-- Ordinary unprivileged fixture CI. This workflow is NOT the protected harness gate.
-- All 22 SOW cases initialized as blocked. Unit tests and local adapter smoke results never populate live pass records.
+- Repository: `hirakroya50/vigilant-kraken-blink`; no new repository creation is required by the accepted plan.
+- Trusted initial runner: user's Mac; credential-free candidate execution must use Docker.
+- Developer/Fixer editing and Fit acceptance remain human-approved through Dyad.
+- AI: OpenAI, configurable `gpt-4.1`, subject to runtime access validation.
+- Historical baseline: `28968a37045c11d8e30fcf3194257293641c940f`. HEAD observed before this increment: `912c1fcb8bd975facec0d68670353e5a3a2295ee`; neither is a claim about the eventual committed increment SHA.
 
-## Not implemented yet (implementation pending, not merely configuration blocked)
+## Existing fixture and bootstrap
 
-- All five worker lifecycles: Fitter, Developer, Tester, Triager, Fixer. Reserved role commands exit with blocked status; no placeholder success/checks.
-- Accepted Fit conformity across new SHAs, reviewed AI adapter, intake idempotency/events/reconciliation, and trusted candidate execution isolation.
-- Human claim/acknowledge/complete session renewal, PR handoffs, stale completion validation, and active role concurrency.
-- Trusted protected browser tests independent of candidate source and a release qualification gate.
-- Stage B release manifest, S3 immutable upload, real Product 007 promotion, hostname testing and guarded rollback.
-- npm lockfile migration: Dyad currently manages the existing pnpm lockfile. npm scripts are available, but frozen npm installs are not yet reproducible. Fixture CI temporarily uses the existing generated pnpm lockfile; this is an explicit deviation from the accepted npm-only target.
+Responsive Bun & Ember SPA, demo roles/payments, validated browser persistence/reset, integer-cent pricing, idempotent simulated checkout and current-menu revalidation remain unchanged. Desktop/mobile browser acceptance source exists. Separate Node contracts, discovery/eligibility helpers, Valkey leases and guarded worktree adapters are present; none alone establishes worker readiness or a protected release gate.
 
-## Missing external prerequisites
+## New M0 foundations implemented
 
-No new remote repository was created, no external checks were published, and no deployment happened. Authorization was not provided in this session.
+- Explicit non-mutating `.env` loading and validated configuration with field-only errors.
+- External owner-restricted RSA PEM checks, GitHub App authentication with SDK token refresh and bounded request timeouts.
+- Live App/installation identity, suspension, repository scope, token-expiry and configured permission verification paths.
+- App-first discovery; explicit labelled development PAT fallback cannot publish trusted checks.
+- Publication adapter revalidates App authorization and lease ownership before writes. Full provenance/lineage readiness remains pending.
+- Bounded `doctor` probes for App, Valkey PING, OpenAI visibility/optional authorized inference, Docker and Chromium. No disposable write diagnostics or protection changes.
+- Unit coverage source for configuration, PEM boundaries, error redaction and PAT publication denial.
+- Separate fixture/harness builds, unit/live integration commands and explicit unit step in fixture CI.
+- Key-file exclusions and [configuration documentation](CONFIGURATION.md).
 
-| Prerequisite | Required information/evidence |
+## M0 remains incomplete
+
+The new diagnostic paths were not executed against the user's credentials in this implementation session. Runtime App authentication, permission exercise, OpenAI billing/model access and isolated-runner prerequisites are not proven. Full retry/rate-limit policy and runtime refresh/denial tests remain pending. No committed npm lockfile exists; fixture CI still uses the existing pnpm lockfile. Frozen npm reproducibility is not established.
+
+Earlier successful GitHub discovery and local Valkey collision/renewal/release/expiry recovery are **reported local adapter evidence**, not worker/SOW passes and not new App validation.
+
+## Implementation still pending
+
+- M1: actual desktop/mobile acceptance, reviewed control/test digests, protected path attacks, Docker snapshot isolation and exact-SHA artifact capture.
+- M2: intake/duplicate detection, accepted-Fit/provenance readiness, events/reconciliation, branch locks and durable recovery.
+- M3–M4: all five role lifecycles, bounded reviewed role AI, human claim/acknowledge/complete, trusted Tester, read-only diagnosis and stale-safe repair. Reserved role commands still exit blocked; no fake checks or handoffs.
+- M5: useful overlapping work, actual GitHub/Valkey recovery/security proof and the 15 Stage A live cases. Protection configuration requires separate explicit approval.
+- M6–M7: protected integration and independently qualified main SHA, immutable S3 manifests/uploads, real Product 007 expected-route promotion, hostname verification and guarded rollback; all Stage B acceptance.
+
+## External gates
+
+| Gate | Required evidence |
 | --- | --- |
-| GitHub | Owner, new repository name, authorized GitHub App/token, App ID, permissions for contents/PR/check writes, runner identity |
-| Trusted runner | Separate control plane and credential-free candidate sandbox, protected acceptance checkout and branch/path review |
-| Valkey | Reachable TLS endpoint and credentials, short-lived lease namespace permissions |
-| AI | Provider choice, protected credentials, model, bounded schema-reviewed output |
-| Stage B | Runtime IAM, S3 bucket, actual Product 007 route contract and production hostname |
+| GitHub App | Local external PEM, installation/repository identity, runtime token validation, approved write/check diagnostics |
+| Trusted Mac | Reviewed control revision; Docker/Chromium readiness and candidate isolation attacks |
+| Valkey | Reachable configured endpoint, lease-loss/recovery and concurrent actual workers |
+| OpenAI | Actual configured model inference/billing and reviewed bounded role output |
+| Humans | Fit review plus acknowledged real Developer/Fixer sessions on independent work |
+| Stage B | S3 bucket/region/runtime IAM, actual Product 007 contract, real hostname |
 
-## New repository using GitHub and a Git client UI
+## Verification and completion boundary
 
-1. In GitHub, choose **New repository** under the authorized owner, choose the agreed name and visibility, and leave README/license/gitignore initialization disabled (this local repository already has history).
-2. Create the repository and copy its HTTPS or SSH URL. No particular owner/name is assumed here.
-3. In an authorized desktop Git client's repository settings, add a remote named `origin` with that URL. Publish the existing `main` branch. Verify GitHub's main commit is the same full 40-character local SHA; do not reinitialize history or force-overwrite an existing remote.
-4. Record the repository URL and SHA in the infrastructure record. Connect the least-privilege GitHub App and set the trusted App ID. Do not put write tokens in candidate jobs.
-5. Set up protected checks only after the independent trusted gate exists. The fixture CI workflow alone does not provide test-weakening protection.
+Current type checking and fixture + strict harness production compilation passed. New unit test source compiled but was not executed in this session; fixture CI now invokes it explicitly. No browser or live provider diagnostic was executed here. See [LOCAL-VERIFICATION.md](LOCAL-VERIFICATION.md).
 
-Repository creation and publication remain pending until an authorized operator supplies evidence.
-
-## Verification interpretation
-
-The production build runs the Vite build, strict harness compilation, and harness unit tests. Browser test source is present; browser execution requires Chromium installation on a supported runner. CI artifacts are temporary supplemental evidence only, never the sole durable SOW truth. See `evidence.json` for the live result registry.
+The evidence registry remains unchanged: all 22 live cases blocked. No check, branch/PR, artifact, deployment or protection setting was published by this increment. Product 008 cannot be called complete until all 22 cases have verified durable real evidence and the final commit/clean-tree gates are satisfied.
