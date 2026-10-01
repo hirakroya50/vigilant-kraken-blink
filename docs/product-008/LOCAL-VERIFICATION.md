@@ -1,6 +1,27 @@
-# Local verification — protected runner continuation
+# Local verification — Product 008 Stage A foundations
 
-## Latest continuation: protected runner code verification
+## Latest continuation: exact-SHA human Fit-review inspector
+
+- Workspace TypeScript checks: passed, no diagnostics.
+- Isolated SPA production build and strict Node harness compilation: passed.
+- Offline harness suite: **76 passed, 0 failed, 0 skipped** (72 prior tests plus 4 Fit-review tests).
+- New tests cover collaborator identity/state selection, stale approval, author self-review, bot/outsider exclusion, unresolved change requests, and exact one-commit/Fit-only compare boundaries.
+- Review and GitHub records in offline tests are fixtures only. No real human approval or live GitHub review was inspected or published.
+- No `safi/fit` check, Developer handoff, Docker/browser run, provider call/write, worker session, or registry evidence was created. The live registry remains unchanged: **0 of 15 Stage A cases recorded passed**.
+
+## Previous continuation: issue intake and read-only GitHub reconciliation
+
+- Workspace TypeScript checks: passed, no diagnostics.
+- Isolated SPA production build: passed.
+- Strict Node harness compilation: passed.
+- Offline harness suite: **72 passed, 0 failed, 0 skipped** (55 existing plus 17 new).
+- New issue/reconciliation tests cover malformed/closed/PR issues, deterministic IDs, captured source provenance, changed/missing/symlink source records, duplicate/colliding work, orphan/closed PRs, forks, stale heads, blob-byte forgery, truncated/oversized trees, foreign checks, polling cursors, rate limits, cancellation, event-hint authority, file bounds, and polling argument/backoff rules.
+- Mocked HTTP responses are offline adapter evidence only; they are not live GitHub intake, provider, worker, or SOW passes.
+- The live registry was not modified; **0 of 15 Stage A cases recorded passed**. No GitHub/App/Valkey/API writes, events, live browser, worker sessions, S3, Product 007 or deployment were performed.
+
+No active Docker smoke, pinned-image preparation, production browser run, public webhook or dispatch integration was executed. The reviewed committed control SHA and matching image digest remain prerequisites for those live runner steps.
+
+## Previous continuation: protected runner code verification
 
 - The user reports Mac setup validation complete. This is recorded as user-reported readiness, not independently observed Docker/browser execution.
 - Workspace TypeScript checks: passed, no diagnostics.

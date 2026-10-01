@@ -10,6 +10,10 @@ Implemented foundations include manual/issue intake, read-only GitHub reconstruc
 
 The user reports Mac setup validation complete. The implemented runner exports exact-SHA Git blobs, checks protected control paths, prepares a reviewed dependency/browser image and runs separate network-disabled build/browser containers. Neither container has secrets, Git metadata, Docker socket or writable host mounts. Artifacts and browser evidence are bounded and validated before materialization. Local manifests do not publish GitHub qualification. See [PROTECTED-RUNNER.md](PROTECTED-RUNNER.md) for explicit review/image prerequisites, operations and live verification boundaries.
 
+## Human Fit review
+
+`fit-review <work-id>` is a read-only inspector. It can verify a non-author repository collaborator's GitHub approval of the exact current SHA, immutable request/source, and one Fit-only commit. It ignores author-claimed reviewer fields, stale reviews, bots, outsiders and unresolved change requests. A successful inspection still publishes no check and prepares no Developer handoff. The Fit draft-generation/commit role and lease-protected trusted publisher remain pending; see [FIT-REVIEW.md](FIT-REVIEW.md).
+
 ## Manual intake
 
 CLI argument reference: `intake <request.json> --approve-write`.

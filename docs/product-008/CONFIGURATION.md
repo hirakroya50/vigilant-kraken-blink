@@ -36,6 +36,7 @@ CLI operations are available through the existing harness script and compiled No
 | `intake <request.json> --approve-write` | Creates/reconciles a manual request commit, work branch and draft PR using App auth and a renewable lease. Reserved issue IDs require issue intake. No qualification or candidate execution. |
 | `intake-issue <number> --approve-write` | Fetches an open same-repository issue and captures request/source together on a work branch/draft PR. Conflicts reject rather than overwrite. Requires Issues:read. |
 | `reconcile [--once\|--watch] [--after work/id] [--event file.json]` | Read-only bounded/polling reconstruction from GitHub with event hints, orphan/closed detection, exact-blob validation and cursor continuation. Never grants role readiness or publishes qualification. See [INTAKE-RECONCILIATION.md](INTAKE-RECONCILIATION.md). |
+| `fit-review <work-id>` | Read-only check of an exact-head GitHub collaborator approval over a one-file Fit-only commit. Does not publish `safi/fit` or dispatch Developer. See [FIT-REVIEW.md](FIT-REVIEW.md). |
 | `evidence` | Validates the 22-case registry shape; does not independently certify referenced live actions. |
 | `evidence --stage-a` | Selects cases 1–13, 21 and 22 while keeping all 22 registry records. Reports registry validation only. |
 | `runner-prepare <control-sha> <official-image@digest> --approve-reviewed-control-build` | Downloads/builds a frozen reviewed local runner image. Explicit operator-declared control review and download consent; no GitHub writes. |
