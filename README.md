@@ -29,9 +29,10 @@ Browser source stays in `src/pages`, `src/components/burger`, and `src/lib/burge
 | `build:harness` | Strict separate Node compilation |
 | `typecheck` | Browser and Node TypeScript validation |
 | `test:harness` | Offline contract/configuration/auth/AI tests; no local secrets or real provider calls |
-| `test:integration` | Opt-in live Valkey test; requires environment injection and skips without its URL |
-| `test:browser` | Playwright mobile/desktop Chromium fixture tests |
-| `harness` | CLI: `doctor`, `ai-propose`, manual `intake`, `evidence` (`--stage-a` scope), App-first `discover` (explicit PAT fallback), `lease-probe` |
+| `test:integration` | Opt-in live Valkey and Docker runner tests; explicit inputs required, otherwise skipped |
+| `test:runner:live` | Live pinned Docker isolation smoke and exact-SHA protected production/browser execution |
+| `test:browser` | Local development-server Playwright mobile/desktop fixture tests |
+| `harness` | CLI: `doctor`, `ai-propose`, manual `intake`, `evidence` (`--stage-a` scope), App-first `discover`, `lease-probe`, `runner-prepare`, `runner-smoke`, `runner-test` |
 
 Worker commands currently return blocked (exit 2), never synthetic successes. The evidence command exits 2 until the selected cases have schema-valid recorded passes; registry validation does not independently verify referenced live evidence. The lease probe tests a real endpoint but labels its scope adapter-smoke-only, not SOW completion. GitHub App SDK authentication now loads the external owner-only RSA PEM and refreshes installation tokens. Live credential verification still requires the trusted runner.
 
@@ -45,6 +46,9 @@ The current Dyad dependency flow retains a pnpm lockfile; migration to committed
 
 - [Delivery status, blockers and repository creation](docs/product-008/STATUS.md)
 - [Trusted execution and human handoff requirements](docs/product-008/RUNBOOK.md)
+- [Protected Docker production/browser runner](docs/product-008/PROTECTED-RUNNER.md)
 - [Machine-readable live SOW evidence](docs/product-008/evidence.json)
+
+The local runner requires reviewed committed control and a digest-pinned official Playwright base. Separate credential-free build/browser containers produce bounded local artifacts/evidence, not GitHub qualification or live SOW passes.
 
 Stage B deliberately has no mock release implementation. S3 details and Product 007's actual routing contract are required before implementation.

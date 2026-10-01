@@ -35,8 +35,12 @@ Earlier successful GitHub discovery and local Valkey collision/renewal/release/e
 
 ## Stage A continuation
 
-Current requested scope is Stage A only; S3, Product 007 and production deployment are deferred, not passed.
+Current requested scope is Stage A only; S3, Product 007 and production deployment are deferred, not passed. The user reports Mac setup validation complete; this is user-reported readiness, not independently rerun diagnostics or SOW evidence.
 
+- Local protected runner implemented: reviewed exact-SHA image preparation, Git-blob snapshot export, protected-file comparison, separate network-disabled build/browser containers, bounded artifacts/evidence and local provenance manifests.
+- Added explicit live canary smoke and protected browser integration operations. They require reviewed committed control, a matching digest-pinned official Playwright base and explicit candidate selection; no implicit success or current-HEAD qualification.
+- Browser tests now collect console/page/HTTP/network evidence. Protected execution uses production output and image-pinned tests, not candidate dev/server/test scripts.
+- Local runner results do not publish GitHub qualification or certify Stage A. Runtime Docker/browser execution remains unmeasured in this implementation session. See [PROTECTED-RUNNER.md](PROTECTED-RUNNER.md).
 - Manual App-authenticated request intake creates a request commit, work branch and draft PR under a renewable repository/request lease. Replays preserve current progress/closed PRs; collisions and ambiguous writes are reconciled without force-updates.
 - Intake validates canonical request identity and regular Git blob mode before accepting existing work. It does not publish qualification.
 - Guarded pushes now require explicit application paths and raw exact-SHA diff validation; symlinks, executables, submodules and protected deletions disguised as renames are rejected. Git hooks/fsmonitor are disabled for control operations.
@@ -46,9 +50,9 @@ Current requested scope is Stage A only; S3, Product 007 and production deployme
 
 ## Implementation still pending
 
-- M1: actual desktop/mobile acceptance, reviewed control/test digests, complete protected execution attacks, Docker snapshot isolation and exact-SHA artifact capture.
+- M1: human review of committed control and base image digest, actual Docker isolation/browser runs, attack proof and artifact/evidence measurement. Runner code exists; execution is not yet measured here.
 - M2: issue intake (manual intake exists), accepted-Fit/provenance readiness, events/reconciliation, branch locks and durable role recovery.
-- M3–M4: all five role lifecycles, bounded reviewed role AI, human claim/acknowledge/complete, trusted Tester, read-only diagnosis and stale-safe repair. Reserved role commands still exit blocked; no fake checks or handoffs.
+- M3–M4: all five role lifecycles, bounded reviewed role AI, human claim/acknowledge/complete, trusted Tester publication/lease-loss cancellation, read-only diagnosis and stale-safe repair. Reserved role commands still exit blocked; no fake checks or handoffs.
 - M5: useful overlapping work, actual GitHub/Valkey recovery/security proof and the 15 Stage A live cases. Protection configuration requires separate explicit approval.
 - M6–M7: S3, Product 007 integration and production deployment are excluded from the current increment and deferred. Full-SOW acceptance still requires their seven cases later.
 
@@ -65,6 +69,6 @@ Current requested scope is Stage A only; S3, Product 007 and production deployme
 
 ## Verification and completion boundary
 
-Latest workspace type checking, isolated fixture production build, strict harness compilation and all **44 offline tests** passed (0 failed, 0 skipped). Three tests exercised actual Git in temporary repositories; GitHub intake tests used fake HTTP responses. No browser, Docker or live provider diagnostic was executed here. See [LOCAL-VERIFICATION.md](LOCAL-VERIFICATION.md).
+Latest workspace type checking, isolated fixture production build, strict harness compilation and all **55 offline tests** passed (0 failed, 0 skipped). Tests exercised actual temporary Git snapshots/diffs, actual container-program syntax and bounded file-export attacks; GitHub intake tests used fake HTTP responses. Docker image preparation, isolation smoke, browser acceptance and live provider diagnostics were not executed here. See [LOCAL-VERIFICATION.md](LOCAL-VERIFICATION.md).
 
 The evidence registry remains unchanged: all 22 live cases blocked, including all 15 Stage A cases. No live check, branch/PR, remote artifact, deployment or protection setting was published by this increment. Stage A cannot be called complete until its 15 cases have verified durable real evidence and final commit/clean-tree gates pass. Full Product 008 completion additionally requires the seven deferred Stage B cases.

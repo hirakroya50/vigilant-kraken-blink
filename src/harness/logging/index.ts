@@ -1,8 +1,9 @@
 import { ConfigurationError } from "../config/index.js";
 import { AIError } from "../ai/openai.js";
+import { RunnerError } from "../testing/snapshot.js";
 
 export function safeFailure(error: unknown): string {
-  if (error instanceof ConfigurationError || error instanceof AIError) return error.message;
+  if (error instanceof ConfigurationError || error instanceof AIError || error instanceof RunnerError) return error.message;
   const status = typeof error === "object" && error !== null && "status" in error ? Number(error.status) : undefined;
   if (status === 401) return "Authentication rejected; verify credential validity and installation identity.";
   if (status === 403) return "Access denied; verify repository permissions, provider billing, and rate limits.";

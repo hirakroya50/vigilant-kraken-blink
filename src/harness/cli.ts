@@ -9,9 +9,29 @@ import { safeFailure } from "./logging/index.js";
 import { proposeCommand } from "./ai/propose-command.js";
 import { intakeCommand } from "./intake/command.js";
 import { inspectRegistry } from "./evidence/registry.js";
+import { prepareRunner, readRunnerRecord } from "./testing/prepare.js";
+import { runProtected } from "./testing/run.js";
+import { runnerSmoke } from "./testing/smoke.js";
 
 const [command, ...args] = process.argv.slice(2);
 async function main() {
+  if (command === "runner-prepare") {
+    if (args.length !== 3 || args[2] !== "--approve-reviewed-control-build") throw new Error("Runner image preparation requires reviewed control SHA, digest-pinned official base image and explicit approval.");
+    console.log(JSON.stringify(await prepareRunner(process.cwd(), args[0], args[1]), null, 2));
+    return;
+  }
+  if (command === "runner-smoke") {
+    if (args.length !== 1) throw new Error("Runner smoke requires one review-record JSON file.");
+    console.log(JSON.stringify(await runnerSmoke(await readRunnerRecord(args[0])), null, 2));
+    return;
+  }
+  if (command === "runner-test") {
+    if (args.length !== 2) throw new Error("Protected testing requires exact candidate SHA and a review-record JSON file.");
+    const result = await runProtected(process.cwd(), args[0], await readRunnerRecord(args[1]));
+    console.log(JSON.stringify(result, null, 2));
+    process.exitCode = result.status === "passed" ? 0 : 2;
+    return;
+  }
   if (command === "intake") {
     if (args.length !== 2 || args[1] !== "--approve-write" || args[0].startsWith("--")) throw new Error("Intake requires a JSON request file and explicit --approve-write.");
     await intakeCommand(await loadConfiguration(), args[0]);
@@ -78,7 +98,7 @@ async function main() {
     process.exitCode = 2;
     return;
   }
-  console.log("Safi Product 008 foundation\nCommands: doctor [--ai-probe], ai-propose <input.json> --approve-cost, intake <request.json> --approve-write, evidence [registry] [--stage-a], discover [--pat], lease-probe\nReserved worker modes (currently blocked): fitter, developer, tester, triager, fixer, release\nThis milestone is not Stage A completion.");
+  console.log("Safi Product 008 foundation\nCommands: doctor [--ai-probe], ai-propose <input.json> --approve-cost, intake <request.json> --approve-write, evidence [registry] [--stage-a], discover [--pat], lease-probe\nProtected execution: runner-prepare <control-sha> <official-image@digest> --approve-reviewed-control-build; runner-smoke <record.json>; runner-test <candidate-sha> <record.json>\nReserved worker modes (currently blocked): fitter, developer, tester, triager, fixer, release\nThis milestone is not Stage A completion.");
   if (command) process.exitCode = 2;
 }
 main().catch(error => { console.error(safeFailure(error)); process.exitCode = 1; });

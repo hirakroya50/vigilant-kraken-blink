@@ -4,7 +4,11 @@
 
 Stage A comprises live acceptance cases 1–13, 21 and 22. S3, Product 007 routing, deployment, live production verification and rollback are deferred. Deferral does not turn their seven cases into passes or change full-SOW completion criteria.
 
-This increment delivers manual intake, guarded candidate-diff validation, and Stage A-scoped registry reporting. It does **not** deliver the remaining five worker lifecycles or certify any live acceptance case.
+Implemented foundations include manual intake, guarded candidate-diff validation, Stage A-scoped reporting and a local protected Docker production/browser runner. They do **not** deliver the remaining five worker lifecycles or certify any live acceptance case.
+
+## Protected execution
+
+The user reports Mac setup validation complete. The next implemented layer exports exact-SHA Git blobs, checks protected control paths, prepares a reviewed dependency/browser image and runs separate network-disabled build/browser containers. Neither container has secrets, Git metadata, Docker socket or writable host mounts. Artifacts and browser evidence are bounded and validated before materialization. Local manifests do not publish GitHub qualification. See [PROTECTED-RUNNER.md](PROTECTED-RUNNER.md) for explicit review/image prerequisites, operations and live verification boundaries.
 
 ## Manual intake
 
@@ -46,10 +50,10 @@ Do not convert offline tests or local Git attack tests into live case passes. Th
 
 ## Next implementation gates
 
-1. Live Mac App/token/OpenAI/Docker diagnostics, approved write exercises, retry/rate-limit policy and reproducible dependency migration.
-2. Pinned reviewed control/tests and credential-free Docker exact-SHA production/browser execution.
+1. Preserve the user-reported Mac readiness distinction; retain live diagnostic evidence, approved write exercises, remaining retry/rate-limit policy and reproducible dependency migration.
+2. Review a committed control revision and matching official base digest, prepare the implemented image and measure actual isolation/desktop/mobile execution and attacks.
 3. Issue intake/events, accepted-Fit lineage, sessions, branch locks and durable reconstruction.
-4. Complete Fitter/Developer/Tester/Triager/Fixer, including real human acceptance/edit/repair.
+4. Complete Fitter/Developer/Tester/Triager/Fixer, including real human acceptance/edit/repair and trusted exact-SHA publication.
 5. Useful concurrent work and live crash/lease-loss/security proofs for all 15 cases.
 
 No complete Stage A claim is allowed until actual referenced evidence is verified and final commit/clean-tree gates are satisfied.

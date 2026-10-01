@@ -89,6 +89,7 @@
     "harness": "tsx src/harness/cli.ts",
     "test:harness": "tsx --test src/harness/__tests__/*.test.ts",
     "test:integration": "tsx --test src/harness/__tests__/integration/*.test.ts",
+    "test:runner:live": "tsx --test src/harness/__tests__/integration/runner.test.ts",
     "test:browser": "playwright test",
     "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.harness.json --noEmit"
   },

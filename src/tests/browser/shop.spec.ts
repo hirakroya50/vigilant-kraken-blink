@@ -1,4 +1,5 @@
-import { test, expect, Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { test, expect } from "./protected-fixtures";
 const key = "safi-burger-v1";
 async function login(page: Page, name = "Alex") { await page.goto("/login"); await page.getByRole("button", { name: `Continue as ${name}`, exact: true }).click(); }
 async function addClassic(page: Page) { await page.goto("/menu"); await page.getByRole("article").filter({ has: page.getByRole("heading", { name: "The House Classic", exact: true }) }).getByRole("button", { name: "Add to bag" }).click(); }

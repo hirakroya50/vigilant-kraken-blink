@@ -1,6 +1,20 @@
-# Local verification — Stage A intake and guarded-diff continuation
+# Local verification — protected runner continuation
 
-## Latest continuation: executed evidence
+## Latest continuation: protected runner code verification
+
+- The user reports Mac setup validation complete. This is recorded as user-reported readiness, not independently observed Docker/browser execution.
+- Workspace TypeScript checks: passed, no diagnostics.
+- Isolated SPA production build and strict Node harness compilation: passed.
+- Offline harness suite: **55 passed, 0 failed, 0 skipped** (44 existing plus 11 new).
+- New tests verify sandbox argument restrictions, immutable image/review schema, protected control comparisons, snapshot/artifact boundaries, complete browser-report requirements and exact committed-byte export using a real temporary Git repository.
+- All five container programs passed actual Node syntax checks. The output collector was exercised against actual temporary files, a symlink and an oversized file.
+- Docker image preparation, isolation smoke and real desktop/mobile Chromium execution were **not executed**. A reviewed committed control revision containing this increment and a matching approved official Playwright base digest are still needed for a live run.
+- Live runner integration tests were authored separately; they are not part of the offline build and were not counted as executed/skipped here.
+- No live GitHub/Valkey/OpenAI calls, qualification checks, worker sessions, S3 uploads, Product 007 changes or deployments were performed. The live registry remains unchanged: **0 of 15 Stage A cases recorded passed**.
+
+Production verification used an isolated working-tree overlay, not a published/qualified candidate SHA. Final commit/clean-tree and all five worker lifecycle gates remain outstanding.
+
+## Previous intake/guarded-diff continuation: executed evidence
 
 - Workspace TypeScript checks: passed, no diagnostics.
 - Isolated SPA production build: passed.
