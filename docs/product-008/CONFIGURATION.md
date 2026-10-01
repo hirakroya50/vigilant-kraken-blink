@@ -26,13 +26,14 @@ CLI operations are available through the existing harness script and compiled No
 | Operation | Effect |
 | --- | --- |
 | `doctor` | App/installation identity, suspension, repository scope, token expiry, configured write permissions, Valkey PING, model visibility, Docker daemon and local Chromium launch. Each result is JSON; blocked checks cause exit 2. No remote writes. |
-| `doctor --ai-probe` | Additionally authorizes one small, potentially paid inference request, with an 8-token output limit, 15-second timeout, and no automatic retries. Pricing/spend caps for role AI remain unimplemented. |
+| `doctor --ai-probe` | Additionally authorizes one small, potentially paid inference request, with an 8-token output limit, 30-second SDK timeout, and no automatic retries. Account-wide spend accounting is not implemented. |
+| `ai-propose <input.json> --approve-cost` | Produces one local schema-validated, unapproved Fit/diagnosis draft from a bounded operator-supplied packet. No GitHub writes or candidate qualification; see [AI.md](AI.md). |
 | `discover` | Requires verified App authentication; lists own-repository work PRs. Does not grant role readiness. |
 | `discover --pat` | Explicitly labels limited-development PAT discovery. Cannot publish checks through the adapter. No automatic fallback from rejected App credentials. |
 | `lease-probe` | Writes unique transient lease keys only; adapter smoke evidence, not SOW evidence. |
 | `evidence` | Validates the 22-case registry shape; does not independently certify referenced live actions. |
 
-Without `--ai-probe`, doctor intentionally reports inference as blocked rather than claiming that model discovery proves billing/access. SDK installation-token hooks refresh cached tokens. GitHub requests use bounded timeouts. Error output contains field names or fixed diagnoses, never provider response bodies, raw messages or stack traces.
+Without `--ai-probe`, doctor intentionally reports inference as blocked rather than claiming that model discovery proves billing/access. SDK installation-token hooks refresh cached tokens. GitHub requests use bounded timeouts and verification checks both installation and issued-token permissions. Error output contains field names or fixed diagnoses, never provider response bodies, raw messages or stack traces. PEM errors distinguish absent/relative paths, owner/mode issues, oversized files and malformed RSA keys.
 
 Installation permission settings are **not** a disposable write/check exercise. Such a diagnostic requires explicit approval and remains pending. Runtime credentials must not have administration permissions; no repository protection settings are changed here.
 
@@ -40,12 +41,12 @@ Installation permission settings are **not** a disposable write/check exercise. 
 
 - `build:fixture`: Vite application only. This is the intended application build command for a future credential-free snapshot runner; using this command alone does not provide isolation.
 - `build:harness`: strict separate Node compilation.
-- `build`: fixture plus harness compilation, not tests or live integration.
-- `test:harness`: local unit tests, excluding live integration.
+- `build`: fixture and harness compilation followed by offline harness unit tests. It never invokes doctor, credentialed inference, live integration or browser tests.
+- `test:harness`: offline unit tests, excluding live integration. GitHub/OpenAI tests use explicit fake HTTP transports and generated temporary unit keys, never local `.env` credentials.
 - `test:integration`: opt-in live adapter suite; the Valkey case skips without its environment input. No `.env` auto-loading in the test suite.
 - `test:browser`: fixture Playwright suite; it is not yet pinned protected acceptance.
 
-Fixture CI explicitly runs unit tests after the separated build. It remains read-only development CI, not a trusted App gate. A committed npm lockfile is still pending; do not claim frozen npm reproducibility from the existing pnpm lockfile.
+Fixture CI relies on build for the offline unit step. It remains read-only development CI, not a trusted App gate. A committed npm lockfile is still pending; do not claim frozen npm reproducibility from the existing pnpm lockfile.
 
 ## Next gates
 

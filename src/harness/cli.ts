@@ -6,9 +6,15 @@ import { GitHubApp } from "./auth/github-app.js";
 import { loadConfiguration } from "./config/index.js";
 import { doctor } from "./doctor.js";
 import { safeFailure } from "./logging/index.js";
+import { proposeCommand } from "./ai/propose-command.js";
 
 const [command, ...args] = process.argv.slice(2);
 async function main() {
+  if (command === "ai-propose") {
+    if (args.length !== 2 || args[1] !== "--approve-cost" || args[0].startsWith("--")) throw new Error("Use an input JSON packet and explicit --approve-cost consent.");
+    await proposeCommand(await loadConfiguration(), args[0]);
+    return;
+  }
   if (command === "doctor") {
     if (args.some(arg => arg !== "--ai-probe")) throw new Error("Unknown doctor argument.");
     process.exitCode = await doctor(await loadConfiguration(), args.includes("--ai-probe")) ? 0 : 2;
@@ -63,7 +69,7 @@ async function main() {
     process.exitCode = 2;
     return;
   }
-  console.log("Safi Product 008 foundation\nCommands: doctor [--ai-probe], evidence [registry], discover [--pat], lease-probe\nReserved worker modes (currently blocked): fitter, developer, tester, triager, fixer, release\nThis milestone is not Stage A completion.");
+  console.log("Safi Product 008 foundation\nCommands: doctor [--ai-probe], ai-propose <input.json> --approve-cost, evidence [registry], discover [--pat], lease-probe\nReserved worker modes (currently blocked): fitter, developer, tester, triager, fixer, release\nThis milestone is not Stage A completion.");
   if (command) process.exitCode = 2;
 }
 main().catch(error => { console.error(safeFailure(error)); process.exitCode = 1; });

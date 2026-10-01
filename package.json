@@ -79,7 +79,7 @@
   "name": "vite_react_shadcn_ts",
   "private": true,
   "scripts": {
-    "build": "npm run build:fixture && npm run build:harness",
+    "build": "npm run build:fixture && npm run build:harness && npm run test:harness",
     "build:fixture": "vite build",
     "build:dev": "vite build --mode development",
     "dev": "vite",

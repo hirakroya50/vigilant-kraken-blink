@@ -28,11 +28,14 @@ Browser source stays in `src/pages`, `src/components/burger`, and `src/lib/burge
 | `build` | Vite production build, harness build, harness unit tests |
 | `build:harness` | Strict separate Node compilation |
 | `typecheck` | Browser and Node TypeScript validation |
-| `test:harness` | Contract/eligibility tests; live Valkey test skipped unless configured |
+| `test:harness` | Offline contract/configuration/auth/AI tests; no local secrets or real provider calls |
+| `test:integration` | Opt-in live Valkey test; requires environment injection and skips without its URL |
 | `test:browser` | Playwright mobile/desktop Chromium fixture tests |
-| `harness` | Diagnostic CLI: `evidence`, `discover`, `lease-probe` |
+| `harness` | CLI: `doctor`, `ai-propose`, `evidence`, App-first `discover` (explicit PAT fallback), `lease-probe` |
 
-Worker commands currently return blocked (exit 2), never synthetic successes. The evidence command also exits 2 until all 22 cases have real passing records. The lease probe tests a real endpoint but labels its scope adapter-smoke-only, not SOW completion.
+Worker commands currently return blocked (exit 2), never synthetic successes. The evidence command also exits 2 until all 22 cases have real passing records. The lease probe tests a real endpoint but labels its scope adapter-smoke-only, not SOW completion. GitHub App SDK authentication now loads the external owner-only RSA PEM and refreshes installation tokens. Live credential verification still requires the trusted runner.
+
+`ai-propose` requires explicit cost consent and produces an unapproved local draft only. Read [configuration](docs/product-008/CONFIGURATION.md) and [AI limits/review boundaries](docs/product-008/AI.md) before using it. Accepted Fit/diagnosis checks and five-role lifecycles are not implemented.
 
 The current Dyad dependency flow retains a pnpm lockfile; migration to committed npm lockfile is still pending. Development CI uses this existing lockfile until that migration is completed.
 

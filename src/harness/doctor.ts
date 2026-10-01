@@ -3,7 +3,7 @@ import { promisify } from "node:util";
 import { access } from "node:fs/promises";
 import { hostname } from "node:os";
 import { chromium } from "@playwright/test";
-import OpenAI from "openai";
+import { OpenAIAdapter } from "./ai/openai.js";
 import type { Configuration } from "./config/index.js";
 import { ConfigurationError } from "./config/index.js";
 import { GitHubApp } from "./auth/github-app.js";
@@ -30,21 +30,16 @@ export async function doctor(config: Configuration, aiProbe = false) {
     return "PING succeeded; no keys written. Lease behavior requires separate integration evidence.";
   });
   await probe("openai-model", async () => {
-    if (!config.OPENAI_API_KEY) throw new ConfigurationError(["OPENAI_API_KEY"]);
-    const client = new OpenAI({ apiKey: config.OPENAI_API_KEY, timeout: 15000, maxRetries: 0 });
-    await client.models.retrieve(config.OPENAI_MODEL);
+    await new OpenAIAdapter(config).modelVisible();
     return `Model ${config.OPENAI_MODEL} visible; inference and billing not established by discovery.`;
   });
   await probe("openai-inference", async () => {
     if (!aiProbe) throw new ConfigurationError(["inference not exercised; doctor --ai-probe authorizes a bounded paid probe"]);
-    if (!config.OPENAI_API_KEY) throw new ConfigurationError(["OPENAI_API_KEY"]);
-    const client = new OpenAI({ apiKey: config.OPENAI_API_KEY, timeout: 15000, maxRetries: 0 });
-    const response = await client.chat.completions.create({ model: config.OPENAI_MODEL, messages: [{ role: "user", content: "Reply with OK only." }], max_completion_tokens: 8 });
-    if (response.choices[0]?.message.content?.trim() !== "OK") throw new ConfigurationError(["inference probe output"]);
+    await new OpenAIAdapter(config).probe();
     return "Bounded inference succeeded; this is access evidence, not reviewed Fit or SOW evidence.";
   });
   await probe("docker", async () => {
-    await exec("docker", ["info", "--format", "{{.ServerVersion}}"], { timeout: 15000, maxBuffer: 65536, env: { PATH: process.env.PATH } });
+    await exec("docker", ["info", "--format", "{{.ServerVersion}}"], { timeout: 15000, maxBuffer: 65536, env: { PATH: process.env.PATH, HOME: process.env.HOME } });
     return "Daemon responds. Snapshot isolation and protected acceptance execution not yet qualified.";
   });
   await probe("chromium", async () => {

@@ -17,6 +17,7 @@ dist-harness
 !.env.example
 *.pem
 *.key
+.safi/
 
 # Editor directories and files
 .vscode/*

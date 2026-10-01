@@ -1,20 +1,31 @@
-# Local verification — development evidence only
+# Local verification — authentication and AI foundation increment
 
-## Current M0 increment
+## Executed in this increment
 
-- Working tree was clean at start; observed HEAD `912c1fcb8bd975facec0d68670353e5a3a2295ee`.
-- Workspace type checks: passed after new configuration/App/doctor modules.
-- Isolated production build: passed (fixture Vite build and strict harness compilation). Build no longer implicitly runs unit or live integration tests.
-- New configuration/key/redaction/PAT unit test source: authored and compiled; not executed in this session. Fixture CI explicitly runs unit tests.
-- Live doctor/App/OpenAI/Valkey/Docker probes: not executed in this session. Presence of configuration is not runtime validation.
-- Playwright fixture: not executed in this session.
-- Live write diagnostics, protections, GitHub check publication, intake/worker lifecycles and releases: not executed.
-- Evidence registry: unchanged, 22 blocked, no new live pass.
+- Browser/application TypeScript check: passed, no diagnostics.
+- SPA production build: passed in an isolated build snapshot.
+- Strict Node harness compilation: passed in that snapshot.
+- Offline harness suite: **25 passed, 0 failed, 0 skipped**.
+- GitHub App tests use fake HTTP responses and generated temporary RSA keys; OpenAI tests use fake HTTP responses. No real credentials, provider calls or writes were exercised by this suite.
+- The initial verification exposed missing final response URLs in the offline GitHub HTTP transport, which Octokit pagination requires. The test transport was corrected and the complete production build/offline suite rerun passed.
 
-The build emitted pre-existing non-fatal SWC esbuild deprecation and outdated Browserslist warnings. No restart or reinstall was required for these source changes.
+The suite covers configuration/loading, RSA key permissions/location, safe diagnostics, PAT publication rejection, SHA freshness/protected paths/evidence contracts, App/installation scope and token permissions, expired-token rejection, and bounded unapproved AI proposals with refusal/truncation/schema/scope/budget/provider-error rejection.
 
-## Historical bootstrap report (not re-executed)
+Observed repository HEAD before edits: `ce29bdd046f1150701d7ce810af386a91aa63577`. Verification executed a working-tree overlay, not a claimed published candidate SHA. The final commit SHA is assigned outside this report.
 
-The bootstrap report recorded five unit passes, one skipped Valkey integration case, fixture production build and strict harness compilation. Earlier reported local discovery and Valkey collision/renewal/release/expiry recovery are adapter evidence only. They are not App-authored worker qualification, useful concurrency or full SOW acceptance.
+## Not executed here
 
-No result in this file is exact-SHA trusted candidate qualification. Final committed SHA, control/test digests and independently validated durable live references must be collected by the actual trusted workflow.
+- Live `doctor`, App permission write/check exercise, token refresh, OpenAI model/billing/inference validation.
+- Desktop/mobile Playwright fixture suite or protected Docker acceptance.
+- Five-role lifecycles, human sessions or concurrency.
+- S3/Product 007/hostname release or rollback.
+
+## Earlier user-reported local results
+
+The user supplied successful GitHub discovery (`[]`), lease acquisition/collision/renewal/release smoke output, and a live Valkey expiry/owner-safe recovery test (1 passed, 0 skipped). These were local adapter results, not full-role or exact-SHA SOW evidence. They were not re-executed in this increment.
+
+## Completion boundary
+
+All 22 live SOW registry cases remain blocked. No branch, PR, check, deployment or repository protection was written in this increment. Offline unit results do not replace live evidence.
+
+The Vite plugin esbuild deprecation and outdated Browserslist warnings remain non-fatal. No unrelated framework/plugin upgrade was made.

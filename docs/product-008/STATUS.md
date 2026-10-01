@@ -6,7 +6,7 @@
 - Trusted initial runner: user's Mac; credential-free candidate execution must use Docker.
 - Developer/Fixer editing and Fit acceptance remain human-approved through Dyad.
 - AI: OpenAI, configurable `gpt-4.1`, subject to runtime access validation.
-- Historical baseline: `28968a37045c11d8e30fcf3194257293641c940f`. HEAD observed before this increment: `912c1fcb8bd975facec0d68670353e5a3a2295ee`; neither is a claim about the eventual committed increment SHA.
+- Historical baseline: `28968a37045c11d8e30fcf3194257293641c940f`. HEAD observed before this increment: `ce29bdd046f1150701d7ce810af386a91aa63577`; neither is a claim about the eventual committed increment SHA.
 
 ## Existing fixture and bootstrap
 
@@ -20,13 +20,16 @@ Responsive Bun & Ember SPA, demo roles/payments, validated browser persistence/r
 - App-first discovery; explicit labelled development PAT fallback cannot publish trusted checks.
 - Publication adapter revalidates App authorization and lease ownership before writes. Full provenance/lineage readiness remains pending.
 - Bounded `doctor` probes for App, Valkey PING, OpenAI visibility/optional authorized inference, Docker and Chromium. No disposable write diagnostics or protection changes.
-- Unit coverage source for configuration, PEM boundaries, error redaction and PAT publication denial.
-- Separate fixture/harness builds, unit/live integration commands and explicit unit step in fixture CI.
-- Key-file exclusions and [configuration documentation](CONFIGURATION.md).
+- External absolute-path RSA PEM diagnostics and issued-token permissions validated in addition to installation permissions.
+- OpenAI SDK adapter for schema-constrained Fit/diagnosis drafts: input/output/call caps, timeout, zero automatic retries, official endpoint, SDK payload logging off, scope enforcement and mandatory human-review status.
+- Cost-consented `ai-propose` command writes private local drafts only; declared source SHA is not independently verified. It is not a Fitter/Triager lifecycle.
+- **25 offline unit tests executed and passed**, including configuration/PEM boundaries, App identity/scope/permissions/expiry, error redaction, PAT denial, and invalid/refused/out-of-scope AI output.
+- Separate fixture/harness builds and offline/live integration commands; aggregate production build runs offline units only. Fixture CI does not run units twice.
+- Key/local-draft exclusions and [configuration](CONFIGURATION.md)/[AI proposal documentation](AI.md).
 
 ## M0 remains incomplete
 
-The new diagnostic paths were not executed against the user's credentials in this implementation session. Runtime App authentication, permission exercise, OpenAI billing/model access and isolated-runner prerequisites are not proven. Full retry/rate-limit policy and runtime refresh/denial tests remain pending. No committed npm lockfile exists; fixture CI still uses the existing pnpm lockfile. Frozen npm reproducibility is not established.
+The diagnostic paths were not executed against the user's credentials in this implementation session. Runtime App authentication, permission exercise, OpenAI billing/model access and isolated-runner prerequisites are not proven. Full retry/rate-limit policy and live token-refresh validation remain pending. No committed npm lockfile exists; fixture CI still uses the existing pnpm lockfile. Frozen npm reproducibility is not established.
 
 Earlier successful GitHub discovery and local Valkey collision/renewal/release/expiry recovery are **reported local adapter evidence**, not worker/SOW passes and not new App validation.
 
@@ -51,6 +54,6 @@ Earlier successful GitHub discovery and local Valkey collision/renewal/release/e
 
 ## Verification and completion boundary
 
-Current type checking and fixture + strict harness production compilation passed. New unit test source compiled but was not executed in this session; fixture CI now invokes it explicitly. No browser or live provider diagnostic was executed here. See [LOCAL-VERIFICATION.md](LOCAL-VERIFICATION.md).
+Current type checking, fixture production build, strict harness compilation and all 25 offline unit tests passed. No browser or live provider diagnostic was executed here. See [LOCAL-VERIFICATION.md](LOCAL-VERIFICATION.md).
 
-The evidence registry remains unchanged: all 22 live cases blocked. No check, branch/PR, artifact, deployment or protection setting was published by this increment. Product 008 cannot be called complete until all 22 cases have verified durable real evidence and the final commit/clean-tree gates are satisfied.
+The evidence registry remains unchanged: all 22 live cases blocked. No check, branch/PR, remote artifact, deployment or protection setting was published by this increment. Product 008 cannot be called complete until all 22 cases have verified durable real evidence and the final commit/clean-tree gates are satisfied.
