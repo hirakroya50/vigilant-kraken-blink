@@ -31,7 +31,9 @@ CLI operations are available through the existing harness script and compiled No
 | `discover` | Requires verified App authentication; lists own-repository work PRs. Does not grant role readiness. |
 | `discover --pat` | Explicitly labels limited-development PAT discovery. Cannot publish checks through the adapter. No automatic fallback from rejected App credentials. |
 | `lease-probe` | Writes unique transient lease keys only; adapter smoke evidence, not SOW evidence. |
+| `intake <request.json> --approve-write` | Creates/reconciles a manual request commit, work branch and draft PR using App auth and a renewable lease. No qualification or candidate execution. See [STAGE-A.md](STAGE-A.md). |
 | `evidence` | Validates the 22-case registry shape; does not independently certify referenced live actions. |
+| `evidence --stage-a` | Selects cases 1–13, 21 and 22 while keeping all 22 registry records. Reports registry validation only. |
 
 Without `--ai-probe`, doctor intentionally reports inference as blocked rather than claiming that model discovery proves billing/access. SDK installation-token hooks refresh cached tokens. GitHub requests use bounded timeouts and verification checks both installation and issued-token permissions. Error output contains field names or fixed diagnoses, never provider response bodies, raw messages or stack traces. PEM errors distinguish absent/relative paths, owner/mode issues, oversized files and malformed RSA keys.
 

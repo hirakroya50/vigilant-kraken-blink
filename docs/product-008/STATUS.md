@@ -33,13 +33,24 @@ The diagnostic paths were not executed against the user's credentials in this im
 
 Earlier successful GitHub discovery and local Valkey collision/renewal/release/expiry recovery are **reported local adapter evidence**, not worker/SOW passes and not new App validation.
 
+## Stage A continuation
+
+Current requested scope is Stage A only; S3, Product 007 and production deployment are deferred, not passed.
+
+- Manual App-authenticated request intake creates a request commit, work branch and draft PR under a renewable repository/request lease. Replays preserve current progress/closed PRs; collisions and ambiguous writes are reconciled without force-updates.
+- Intake validates canonical request identity and regular Git blob mode before accepting existing work. It does not publish qualification.
+- Guarded pushes now require explicit application paths and raw exact-SHA diff validation; symlinks, executables, submodules and protected deletions disguised as renames are rejected. Git hooks/fsmonitor are disabled for control operations.
+- `evidence --stage-a` reports the 15 Stage A cases without deleting the seven deferred cases or pretending registry validation verifies live evidence.
+- Offline intake, registry and local Git attack tests are added. Verification results are recorded in LOCAL-VERIFICATION.md after execution.
+- See [STAGE-A.md](STAGE-A.md) for operations, recovery and remaining boundaries.
+
 ## Implementation still pending
 
-- M1: actual desktop/mobile acceptance, reviewed control/test digests, protected path attacks, Docker snapshot isolation and exact-SHA artifact capture.
-- M2: intake/duplicate detection, accepted-Fit/provenance readiness, events/reconciliation, branch locks and durable recovery.
+- M1: actual desktop/mobile acceptance, reviewed control/test digests, complete protected execution attacks, Docker snapshot isolation and exact-SHA artifact capture.
+- M2: issue intake (manual intake exists), accepted-Fit/provenance readiness, events/reconciliation, branch locks and durable role recovery.
 - M3–M4: all five role lifecycles, bounded reviewed role AI, human claim/acknowledge/complete, trusted Tester, read-only diagnosis and stale-safe repair. Reserved role commands still exit blocked; no fake checks or handoffs.
 - M5: useful overlapping work, actual GitHub/Valkey recovery/security proof and the 15 Stage A live cases. Protection configuration requires separate explicit approval.
-- M6–M7: protected integration and independently qualified main SHA, immutable S3 manifests/uploads, real Product 007 expected-route promotion, hostname verification and guarded rollback; all Stage B acceptance.
+- M6–M7: S3, Product 007 integration and production deployment are excluded from the current increment and deferred. Full-SOW acceptance still requires their seven cases later.
 
 ## External gates
 
@@ -54,6 +65,6 @@ Earlier successful GitHub discovery and local Valkey collision/renewal/release/e
 
 ## Verification and completion boundary
 
-Current type checking, fixture production build, strict harness compilation and all 25 offline unit tests passed. No browser or live provider diagnostic was executed here. See [LOCAL-VERIFICATION.md](LOCAL-VERIFICATION.md).
+Latest workspace type checking, isolated fixture production build, strict harness compilation and all **44 offline tests** passed (0 failed, 0 skipped). Three tests exercised actual Git in temporary repositories; GitHub intake tests used fake HTTP responses. No browser, Docker or live provider diagnostic was executed here. See [LOCAL-VERIFICATION.md](LOCAL-VERIFICATION.md).
 
-The evidence registry remains unchanged: all 22 live cases blocked. No check, branch/PR, remote artifact, deployment or protection setting was published by this increment. Product 008 cannot be called complete until all 22 cases have verified durable real evidence and the final commit/clean-tree gates are satisfied.
+The evidence registry remains unchanged: all 22 live cases blocked, including all 15 Stage A cases. No live check, branch/PR, remote artifact, deployment or protection setting was published by this increment. Stage A cannot be called complete until its 15 cases have verified durable real evidence and final commit/clean-tree gates pass. Full Product 008 completion additionally requires the seven deferred Stage B cases.

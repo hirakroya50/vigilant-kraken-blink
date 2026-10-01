@@ -5,10 +5,16 @@ import { mkdir } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { shaSchema, roleSchema } from "../contracts/index.js";
 import type { Lease } from "../coordination/lease.js";
+import { validateRawDiff } from "./candidate-diff.js";
 const exec = promisify(execFile);
 export async function git(repository: string, args: string[]) {
-  const { stdout } = await exec("git", ["-C", resolve(repository), ...args], { maxBuffer: 8 * 1024 * 1024, timeout: 30000, env: { PATH: process.env.PATH, HOME: process.env.HOME, GIT_TERMINAL_PROMPT: "0" } });
+  const { stdout } = await exec("git", ["-c", "core.hooksPath=/dev/null", "-c", "core.fsmonitor=false", "-C", resolve(repository), ...args], { maxBuffer: 8 * 1024 * 1024, timeout: 30000, env: { PATH: process.env.PATH, HOME: process.env.HOME, GIT_TERMINAL_PROMPT: "0" } });
   return stdout.trim();
+}
+export async function validateCandidateDiff(repository: string, expected: string, candidate: string, allowedPaths: string[]) {
+  shaSchema.parse(expected); shaSchema.parse(candidate);
+  const raw = await git(repository, ["diff-tree", "--no-commit-id", "--no-ext-diff", "--no-textconv", "--raw", "--no-abbrev", "--no-renames", "-r", "-z", expected, candidate, "--"]);
+  return validateRawDiff(raw, allowedPaths);
 }
 export async function prepareWorktree(repository: string, root: string, role: string, sha: string) {
   shaSchema.parse(sha); roleSchema.parse(role);
@@ -20,11 +26,12 @@ export async function prepareWorktree(repository: string, root: string, role: st
   await git(repository, ["worktree", "add", "--detach", path, sha]);
   return path;
 }
-export async function pushExpectedHead(repository: string, branch: string, expected: string, candidate: string, lease: Lease) {
+export async function pushExpectedHead(repository: string, branch: string, expected: string, candidate: string, lease: Lease, allowedPaths: string[]) {
   shaSchema.parse(expected); shaSchema.parse(candidate);
   if (!/^work\/[a-z0-9-]+$/.test(branch)) throw new Error("Only work branches may be updated.");
   if (candidate === expected) throw new Error("Completion must produce a new candidate.");
   await git(repository, ["merge-base", "--is-ancestor", expected, candidate]);
+  await validateCandidateDiff(repository, expected, candidate, allowedPaths);
   await lease.assertOwned();
   await git(repository, ["push", `--force-with-lease=refs/heads/${branch}:${expected}`, "origin", `${candidate}:refs/heads/${branch}`]);
 }

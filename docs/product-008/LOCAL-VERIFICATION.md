@@ -1,6 +1,20 @@
-# Local verification — authentication and AI foundation increment
+# Local verification — Stage A intake and guarded-diff continuation
 
-## Executed in this increment
+## Latest continuation: executed evidence
+
+- Workspace TypeScript checks: passed, no diagnostics.
+- Isolated SPA production build: passed.
+- Strict Node harness compilation: passed.
+- Offline harness suite: **44 passed, 0 failed, 0 skipped** (25 existing plus 19 new).
+- New intake tests use fake GitHub HTTP responses, not real GitHub writes or Valkey.
+- Three new tests execute actual Git operations in temporary local repositories: normal exact-SHA edits, symlink rejection and protected-test rename rejection. They are local security tests, not live SOW acceptance.
+- The first strict build exposed differing Octokit list/create PR label types. Intake now keeps only the PR number/URL/state fields it uses; the subsequent complete build and test suite passed.
+- No Mac credential diagnostics, Docker execution, browser acceptance, human sessions or live worker concurrency were executed in this continuation. No S3, Product 007 or deployment work was performed.
+- The live evidence registry is unchanged: **0 of 15 Stage A cases recorded passed**. All five role commands still report blocked.
+
+Verification used an isolated working-tree overlay, not a claimed published candidate/control SHA. No final commit or clean-tree completion is claimed.
+
+## Previous authentication/AI increment: executed evidence
 
 - Browser/application TypeScript check: passed, no diagnostics.
 - SPA production build: passed in an isolated build snapshot.

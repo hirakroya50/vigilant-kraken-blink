@@ -1,15 +1,22 @@
 import { readFile } from "node:fs/promises";
 import { connectValkey, Lease } from "./coordination/lease.js";
-import { evidenceSchema, roleSchema } from "./contracts/index.js";
+import { roleSchema } from "./contracts/index.js";
 import { GitHub } from "./git/github.js";
 import { GitHubApp } from "./auth/github-app.js";
 import { loadConfiguration } from "./config/index.js";
 import { doctor } from "./doctor.js";
 import { safeFailure } from "./logging/index.js";
 import { proposeCommand } from "./ai/propose-command.js";
+import { intakeCommand } from "./intake/command.js";
+import { inspectRegistry } from "./evidence/registry.js";
 
 const [command, ...args] = process.argv.slice(2);
 async function main() {
+  if (command === "intake") {
+    if (args.length !== 2 || args[1] !== "--approve-write" || args[0].startsWith("--")) throw new Error("Intake requires a JSON request file and explicit --approve-write.");
+    await intakeCommand(await loadConfiguration(), args[0]);
+    return;
+  }
   if (command === "ai-propose") {
     if (args.length !== 2 || args[1] !== "--approve-cost" || args[0].startsWith("--")) throw new Error("Use an input JSON packet and explicit --approve-cost consent.");
     await proposeCommand(await loadConfiguration(), args[0]);
@@ -21,12 +28,14 @@ async function main() {
     return;
   }
   if (command === "evidence") {
-    const registry = JSON.parse(await readFile(args[0] ?? "docs/product-008/evidence.json", "utf8"));
-    if (!Array.isArray(registry) || registry.length !== 22) throw new Error("Evidence registry must contain all 22 cases.");
-    const entries = registry.map(entry => evidenceSchema.parse(entry));
-    if (new Set(entries.map(entry => entry.caseId)).size !== 22) throw new Error("Duplicate acceptance case.");
-    console.table(entries.map(entry => ({ case: entry.caseId, status: entry.status, reason: entry.reason })));
-    process.exitCode = entries.every(entry => entry.status === "passed") ? 0 : 2;
+    const stageA = args.includes("--stage-a");
+    const paths = args.filter(arg => arg !== "--stage-a");
+    if (paths.length > 1 || paths.some(arg => arg.startsWith("--")) || args.filter(arg => arg === "--stage-a").length > 1) throw new Error("Unknown evidence argument.");
+    const registry = JSON.parse(await readFile(paths[0] ?? "docs/product-008/evidence.json", "utf8"));
+    const report = inspectRegistry(registry, stageA ? "A" : "all");
+    console.log(JSON.stringify({ scope: report.scope, verification: report.verification, total: report.total, recordedPasses: report.recordedPasses }));
+    console.table(report.entries.map(entry => ({ case: entry.caseId, status: entry.status, reason: entry.reason })));
+    process.exitCode = report.allRecordedPassed ? 0 : 2;
     return;
   }
   if (command === "discover") {
@@ -69,7 +78,7 @@ async function main() {
     process.exitCode = 2;
     return;
   }
-  console.log("Safi Product 008 foundation\nCommands: doctor [--ai-probe], ai-propose <input.json> --approve-cost, evidence [registry], discover [--pat], lease-probe\nReserved worker modes (currently blocked): fitter, developer, tester, triager, fixer, release\nThis milestone is not Stage A completion.");
+  console.log("Safi Product 008 foundation\nCommands: doctor [--ai-probe], ai-propose <input.json> --approve-cost, intake <request.json> --approve-write, evidence [registry] [--stage-a], discover [--pat], lease-probe\nReserved worker modes (currently blocked): fitter, developer, tester, triager, fixer, release\nThis milestone is not Stage A completion.");
   if (command) process.exitCode = 2;
 }
 main().catch(error => { console.error(safeFailure(error)); process.exitCode = 1; });

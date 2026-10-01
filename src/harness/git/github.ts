@@ -26,6 +26,12 @@ export class GitHub {
     const checks = await this.api.paginate(this.api.checks.listForRef, { owner: this.owner, repo: this.repo, ref: sha, per_page: 100 });
     return checks.filter(check => check.head_sha === sha);
   }
+  async assertWriteAuthority(lease: { assertOwned(): Promise<void> }) {
+    if (!this.verifyAuthority) throw new Error("Writes require verified GitHub App authentication; discovery PAT is read-only.");
+    const identity = await this.verifyAuthority();
+    await lease.assertOwned();
+    return identity;
+  }
   async publish(input: z.infer<typeof checkSchema>, lease: Lease) {
     if (!this.verifyAuthority) throw new Error("Trusted publication requires verified GitHub App authentication; discovery PAT is read-only.");
     const check = checkSchema.parse(input);
