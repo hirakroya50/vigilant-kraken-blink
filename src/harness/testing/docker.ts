@@ -12,10 +12,12 @@ export const recordSchema = z.object({
   baseImage: baseImageSchema, preparedAt: z.string().datetime(), review: z.literal("operator-declared-control-review"),
 }).strict();
 export type RunnerRecord = z.infer<typeof recordSchema>;
-export async function docker(args: string[], timeout = 30000, maxBuffer = 4 * 1024 * 1024) {
+export async function docker(args: string[], timeout = 30000, maxBuffer = 4 * 1024 * 1024, signal?: AbortSignal) {
   try {
-    return await exec("docker", args, { timeout, maxBuffer, env: { PATH: process.env.PATH, HOME: process.env.HOME }, encoding: "utf8" });
+    signal?.throwIfAborted();
+    return await exec("docker", args, { timeout, maxBuffer, signal, env: { PATH: process.env.PATH, HOME: process.env.HOME }, encoding: "utf8" });
   } catch (error) {
+    signal?.throwIfAborted();
     const result = error as { stdout?: string; stderr?: string; code?: number | string };
     // No host credentials are passed to containers; returned logs are saved privately, never printed as provider diagnostics.
     const failure = new RunnerError("Docker operation failed or timed out; inspect the private runner log and local Docker readiness.");

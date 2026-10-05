@@ -32,17 +32,21 @@ export class GitHub {
     await lease.assertOwned();
     return identity;
   }
-  async publish(input: z.infer<typeof checkSchema>, lease: Lease) {
+  async publish(input: z.infer<typeof checkSchema>, lease: Lease, revalidate?: () => Promise<void>) {
     if (!this.verifyAuthority) throw new Error("Trusted publication requires verified GitHub App authentication; discovery PAT is read-only.");
     const check = checkSchema.parse(input);
     const identity = await this.verifyAuthority();
     await lease.assertOwned();
+    await revalidate?.();
     const existing = (await this.checks(check.sha)).find(c => c.app?.id === identity.appId && c.external_id === check.evidenceId && c.name === check.name && c.status === "completed");
     if (existing) {
       if (existing.conclusion !== check.conclusion || existing.output.summary !== check.summary) throw new Error("Evidence identity already has different content.");
+      await revalidate?.();
+      await lease.assertOwned();
       return existing.html_url;
     }
     if ((await this.verifyAuthority()).appId !== identity.appId) throw new Error("Publication App identity changed.");
+    await revalidate?.();
     await lease.assertOwned();
     const response = await this.api.checks.create({ owner: this.owner, repo: this.repo, name: check.name, head_sha: check.sha, external_id: check.evidenceId, status: "completed", conclusion: check.conclusion, completed_at: new Date().toISOString(), output: { title: check.title, summary: check.summary } });
     if (response.data.app?.id !== identity.appId || response.data.head_sha !== check.sha) throw new Error("Published check identity mismatch; reconcile remote truth before retrying.");

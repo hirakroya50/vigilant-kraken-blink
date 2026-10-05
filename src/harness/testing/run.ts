@@ -9,8 +9,10 @@ import { decodeBuildPacket, decodeTestPacket, summarizeBrowserReport } from "./a
 function fileDigests(files: SnapshotFile[]) {
   return files.map(file => ({ path: file.path, bytes: file.data.length, sha256: createHash("sha256").update(file.data).digest("hex") }));
 }
-export async function runProtected(repository: string, candidateSha: string, record: RunnerRecord) {
+export async function runProtected(repository: string, candidateSha: string, record: RunnerRecord, signal?: AbortSignal) {
+  signal?.throwIfAborted();
   const [control, candidate] = await Promise.all([readSnapshot(repository, record.controlSha), readSnapshot(repository, candidateSha)]);
+  signal?.throwIfAborted();
   const identity = controlIdentity(control);
   if (record.controlDigest !== identity.controlDigest || record.testDigest !== identity.testDigest || record.dependencyDigest !== identity.dependencyDigest) throw new RunnerError("Review record differs from actual control Git content.");
   assertProtectedSnapshot(control, candidate);
@@ -30,8 +32,9 @@ export async function runProtected(repository: string, candidateSha: string, rec
   let reason = "";
   const cleanupFailures: string[] = [];
   const execute = async (purpose: "build" | "test") => {
+    signal?.throwIfAborted();
     const name = `safi-${randomUUID()}`;
-    try { return await docker(sandboxArguments(record.imageId, name, purpose === "build" ? source : artifact, purpose), purpose === "build" ? 360000 : 540000, purpose === "build" ? 64 * 1024 * 1024 : 96 * 1024 * 1024); }
+    try { return await docker(sandboxArguments(record.imageId, name, purpose === "build" ? source : artifact, purpose), purpose === "build" ? 360000 : 540000, purpose === "build" ? 64 * 1024 * 1024 : 96 * 1024 * 1024, signal); }
     finally { await docker(["rm", "--force", name]).catch(() => { cleanupFailures.push(name); }); }
   };
   try {
@@ -58,6 +61,7 @@ export async function runProtected(repository: string, candidateSha: string, rec
     await writeFile(join(root, `${phase}-failure.log`), String(failure.stdout ?? "").slice(0, 2 * 1024 * 1024) + String(failure.stderr ?? "").slice(0, 2 * 1024 * 1024), { flag: "wx", mode: 0o600 });
     reason = phase === "build" ? "Build execution or artifact validation failed; inspect private logs." : "Protected browser execution/evidence validation failed; inspect available private reports and logs.";
   } finally { await rm(source, { recursive: true, force: true }); }
+  signal?.throwIfAborted();
   if (cleanupFailures.length) reason = "Container cleanup failed; reconcile the listed runner container identities before retrying.";
   const manifest = {
     version: 1, scope: "local-protected-run-only", qualificationPublished: false,

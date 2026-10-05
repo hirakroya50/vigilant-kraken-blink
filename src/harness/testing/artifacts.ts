@@ -29,12 +29,19 @@ export function decodeTestPacket(text: string) {
 export function summarizeBrowserReport(input: unknown) {
   const report = z.object({ stats: z.object({ expected: z.number().int().nonnegative(), unexpected: z.number().int().nonnegative(), skipped: z.number().int().nonnegative(), flaky: z.number().int().nonnegative() }), suites: z.array(z.unknown()), errors: z.array(z.unknown()).optional() }).parse(input);
   const projects = new Map<string, number>();
+  const passedTests: Record<string, string[]> = {};
   function visit(value: unknown) {
-    const suite = z.object({ suites: z.array(z.unknown()).optional(), specs: z.array(z.object({ tests: z.array(z.object({ projectName: z.string() })) })).optional() }).parse(value);
-    for (const spec of suite.specs ?? []) for (const test of spec.tests) projects.set(test.projectName, (projects.get(test.projectName) ?? 0) + 1);
+    const suite = z.object({ suites: z.array(z.unknown()).optional(), specs: z.array(z.object({ file: z.string().optional(), title: z.string().optional(), tests: z.array(z.object({ projectName: z.string(), expectedStatus: z.string().optional(), status: z.string().optional(), results: z.array(z.object({ status: z.string() })).optional() })) })).optional() }).parse(value);
+    for (const spec of suite.specs ?? []) for (const test of spec.tests) {
+      projects.set(test.projectName, (projects.get(test.projectName) ?? 0) + 1);
+      if (spec.file && spec.title && test.expectedStatus === "passed" && test.status === "expected" && test.results?.length && test.results.every(result => result.status === "passed")) {
+        const key = `${spec.file.split("/").at(-1)}::${spec.title}`;
+        (passedTests[test.projectName] ??= []).push(key);
+      }
+    }
     for (const child of suite.suites ?? []) visit(child);
   }
   for (const suite of report.suites) visit(suite);
   const complete = report.stats.expected >= 22 && report.stats.unexpected === 0 && report.stats.skipped === 0 && report.stats.flaky === 0 && !report.errors?.length && (projects.get("desktop-chromium") ?? 0) >= 11 && (projects.get("mobile-chromium") ?? 0) >= 11;
-  return { ...report.stats, projects: Object.fromEntries(projects), complete };
+  return { ...report.stats, projects: Object.fromEntries(projects), passedTests, complete };
 }

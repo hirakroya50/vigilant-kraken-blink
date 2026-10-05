@@ -1,0 +1,616 @@
+
+SAFI PRODUCT 008
+Git-Native Parallel SPA Continuous Development & Deployment Harness
+SOW Date: September 28, 2026
+1. Objective
+Build the first Safi Continuous SPA Development and Deployment Harness.
+The Product shall support continuous iteration on Single Page Applications developed using Dyad, with five independent roles operating concurrently:
+Fitter
+Developer
+Tester
+Triager
+Fixer
+The system shall be based fundamentally on the Git model, not on a separate workflow database.
+Central principle: Git is the authoritative development model.
+WORK ITEM      = Git branch / Pull Request
+CANDIDATE      = exact Git commit SHA
+STATE/EVIDENCE = checks attached to that SHA
+HISTORY        = Git history
+INTEGRATION    = merge queue / protected main
+RELEASE        = exact qualified main SHA
+DEPLOYMENT     = immutable S3 artifact derived from that SHA
+Valkey shall be used only for ephemeral concurrent-agent claims and leases. It shall not become the permanent source of truth for development state.
+2. Seven-Hour Product
+Product 008 is a deliberate exception to the usual six-hour discipline.
+SEVEN WORKING HOURS OR NOTHING
+The extra hour is justified by the need to demonstrate concurrent role operation, exact-SHA coordination, protected test evidence, parallel agent claims, immutable SPA builds, deployment to S3, production promotion through Product 007, live verification, and rollback.
+The developer is still expected to:
+understand → build → test → fix → deploy → commit → deliver
+inside the fixed time box. Architecture is already decided.
+3. Finished Product — Observable Hour-7 Result
+At Hour 7, the system shall demonstrate a real SPA change moving through a parallel Git-native development system and reaching the deployed environment.
+At the same time, different roles must be capable of working on different work items or candidates.
+FITTER
+  fitting Work 105
+
+DEVELOPER
+  implementing Work 104
+
+TESTER
+  testing SHA C of Work 103
+
+TRIAGER
+  analyzing failed SHA B of Work 102
+
+FIXER
+  repairing SHA A of Work 101
+There shall be no global requirement that one role wait for all other roles.
+All coordination shall ultimately refer to exact Git commit SHAs.
+4. Product Principle
+Git
+    permanent truth
+
+Git commit SHA
+    immutable candidate identity
+
+Git checks
+    evidence about that exact candidate
+
+Git branch / PR
+    active work item
+
+Valkey
+    temporary lease / claim only
+
+S3
+    immutable built SPA artifacts
+
+Product 007 Smart Proxy
+    live traffic routing
+
+Valkey route used by Product 007
+    atomic production promotion / rollback
+The implementation must not create a parallel permanent workflow database.
+5. Starting Point / Preconditions
+Product 007
+A working Product 007 Smart Proxy shall already exist.
+It shall support hostname + path prefix → S3 folder through Valkey configuration and shall already be capable of serving static SPA content from S3.
+Git Repository
+A designated Git repository shall exist containing a working SPA.
+branches
+commits
+Pull Requests
+commit-associated checks/status
+protected main
+merge control
+SPA
+The initial SPA shall be created or editable in Dyad, buildable using the frozen frontend toolchain, and deployable as static files.
+AWS
+S3 bucket for SPA releases
+Product 007 runtime path
+appropriate machine-role access
+no embedded AWS credentials
+Valkey
+A Valkey service shall exist and be reachable by the Harness. For Product 008, Valkey is only for transient leases/claims and release-route updates required by Product 007.
+6. Frozen Toolchain
+The developer shall not substitute competing tools during this SOW.
+SPA Development
+Dyad is the frozen AI-assisted SPA development environment for Product 008.
+Frontend
+React + Vite for the initial Product-008 SPA fixture. The Harness architecture shall not depend on React internals where avoidable.
+Source Control
+Git is authoritative.
+Repository Coordination
+Use the repository platform's Pull Requests, commit checks/status, protected main branch, and merge control.
+Browser Testing
+Playwright using Chromium for the mandatory browser acceptance path.
+Build Tooling
+npm using the repository's normal Vite build.
+Harness Controller
+Node.js + TypeScript for the minimal orchestration logic.
+Shared Ephemeral Coordination
+Valkey only for agent leases, claims, short-lived locks, and optional priority queue/cache. Do not use Valkey as permanent development truth.
+7. Fundamental Git Model
+Work Item
+A work item is represented by a Git branch and Pull Request.
+work/105-customer-search
+The work item belongs to the feature/change, not to the agent.
+Do not create permanent role branches such as fitter, developer, tester, triager, or fixer.
+Candidate
+A candidate is one exact commit SHA.
+8f51ab2
+The branch may move. The SHA does not. All evidence shall refer to the SHA.
+Central Invariant
+No test, triage, fit, fix, qualification, or release conclusion belongs merely to a branch. It belongs to an exact commit SHA.
+8. Why Exact SHA Matters
+work/105 HEAD = SHA-A
+safi/test = SUCCESS
+If the Developer then pushes a modification producing SHA-B, SHA-B is a new candidate. SHA-B does not inherit the test success of SHA-A. It must earn its own evidence.
+9. The Five Parallel Roles
+All five roles are independent concurrent workers. They do not form one serial process. They may be AI agents, humans, or eventually multiple copies of either. Product 008 shall initially demonstrate at least one worker for each role.
+The architecture must not assume there can only ever be one.
+10. Fitter
+The Fitter determines how a requested change fits into the existing SPA.
+The Fitter may inspect current SPA source, existing routes, components, behavior, tests, and prior change specifications.
+The Fitter produces a machine-readable and human-readable Fit specification defining desired behavior, affected area, constraints, protected behavior, acceptance criteria, likely files/components, dependencies, and explicit out-of-scope items.
+work_id: 105
+goal: Add customer search
+
+acceptance:
+  - open /customers
+  - type smith
+  - show only matching customers
+  - clear input
+  - restore all customers
+
+protected:
+  - existing customer navigation
+  - create-customer flow
+The Fitter shall publish safi/fit against the exact SHA containing the Fit specification.
+11. Developer
+The Developer consumes work for which Fit is satisfied.
+The Developer may modify SPA implementation files and produces a new commit. That new commit automatically becomes a new candidate.
+The Developer does not mark its own candidate as tested or release-ready. Its principal output is a NEW GIT SHA.
+12. Tester
+The Tester is deterministic where practical and shall operate against an exact candidate SHA.
+checkout exact SHA
+build SPA
+launch SPA
+execute Playwright browser tests
+inspect browser console failures
+inspect failed network requests
+verify acceptance behavior
+run protected regression tests
+The Tester shall not modify the SPA implementation.
+The Tester publishes safi/build and safi/test against the exact SHA with SUCCESS or FAILURE evidence.
+13. Triager
+The Triager consumes failed candidate evidence and is AI-assisted but read-only with respect to implementation files.
+failed tests
+browser logs
+build logs
+network failures
+relevant source
+Fit specification
+previous candidate difference
+The Triager shall determine a likely root cause and produce a bounded diagnosis identifying the observed failure, likely cause, affected area, recommended minimal repair, and tests to rerun.
+The Triager publishes safi/triage against the failed exact SHA and may not edit the implementation.
+14. Fixer
+The Fixer consumes a valid triage result.
+Before modifying code, it shall verify that current branch HEAD equals the triaged SHA.
+If HEAD has moved, the Fixer shall not blindly apply a diagnosis from the stale SHA. It shall stop or re-evaluate against the new candidate.
+The Fixer shall make the smallest permitted implementation repair, then create a new Git commit. That commit becomes a new candidate and must earn new test evidence.
+15. Role Parallelism
+The Harness must not implement FIT → DEVELOP → TEST → TRIAGE → FIX as a single global serialized state machine.
+Instead, each role independently discovers eligible work. Different work items may be in different stages simultaneously.
+16. Readiness Is Role-Specific
+There shall be no generic stored READY flag. Readiness is computed from Git state and evidence.
+Ready for Developer
+current SHA has:
+safi/fit = SUCCESS
+and no active Developer lease exists.
+Ready for Tester
+candidate exists
+AND
+build/test evidence for that exact SHA is absent or requires rerun
+and no active Tester lease exists.
+Ready for Triager
+safi/test = FAILURE
+AND
+safi/triage absent for that SHA
+and no active Triager lease exists.
+Ready for Fixer
+safi/triage = SUCCESS
+AND
+branch HEAD still equals triaged SHA
+and no active Fixer lease exists.
+Ready for Release
+All mandatory protected checks on the exact candidate SHA are successful.
+17. NEXT Is Computed, Not Stored
+There shall be no global NEXT pointer. Instead each role independently computes the highest-priority or oldest eligible unclaimed work item for that role.
+NEXT(role)
+ =
+ eligible work
+ - already claimed work
+ ordered by priority/time
+18. Agent Claims / Leases
+Git is not a mutex. Product 008 shall use Valkey for short-lived claims.
+safi:lease:<role>:<sha>
+    -> agent-id
+A role must atomically acquire the lease before acting. If another worker already owns the lease, the new worker shall choose different eligible work.
+Leases must expire automatically, and workers shall renew active leases while operating. A dead worker must not permanently block work.
+19. Valkey Is Never Permanent Development Truth
+Valkey may contain leases, temporary claims, short-lived work availability hints, and transient priority data.
+Valkey shall not permanently contain definitive candidate history, definitive test history, definitive Fit results, definitive triage reports, or release history.
+If Valkey is completely erased, the Product shall be capable of reconstructing important work state from Git, Pull Requests, commits and checks.
+20. Git Worktrees
+Parallel writable work shall use isolated Git worktrees or equivalent isolated checkouts.
+/repo/main
+
+/worktrees/work-105-developer
+/worktrees/work-104-fixer
+/worktrees/work-103-test
+Two agents shall not manipulate the same working directory concurrently. Each modifying agent operates in its own worktree.
+21. Protected Evidence
+Tests and required acceptance definitions shall not be weakened to manufacture a pass.
+Fit acceptance criteria once accepted for the candidate
+mandatory browser tests
+protected regression tests
+release gate configuration
+A Developer or Fixer shall not pass a candidate by simply deleting or disabling a failed test.
+22. Candidate Artifact
+A passing candidate shall produce an immutable static SPA build keyed to the Git SHA.
+Git SHA:
+8f51ab2
+
+Artifact:
+s3://<release-bucket>/releases/8f51ab2/
+The contents of an existing SHA release folder shall never be modified in place. A changed build requires a new SHA and a new release location.
+23. Qualification
+A candidate is QUALIFIED only when all required evidence for that exact SHA has passed.
+safi/fit      SUCCESS
+safi/build    SUCCESS
+safi/test     SUCCESS
+and all protected regression checks succeed. If the commit changes, qualification must be earned again for the new SHA.
+24. Integration
+Qualified feature branches are merged toward main. main is the serialization boundary. Parallel work may continue freely before integration.
+work/101 ─┐
+work/102 ─┼── qualified ──> integration / merge ──> main
+work/103 ─┘
+The exact merged SHA on main becomes the release candidate and must pass the required release checks.
+25. Release
+A release is not merely the latest build. A release is an exact qualified main SHA.
+RELEASE = main@8f51ab2
+The release record shall identify Git SHA, build artifact, test evidence, timestamp, and deployment target.
+26. Deploy
+Deployment shall use the Product 007 static route model.
+The exact built SPA artifact shall be uploaded to:
+s3://<bucket>/releases/<SHA>/
+Then the Product 007 Valkey route shall be updated from the previously deployed release to the new release.
+OLD:
+example.com|/
+    -> s3://spa/releases/111aaa/
+
+NEW:
+example.com|/
+    -> s3://spa/releases/222bbb/
+The promotion must not require rewriting the previous release.
+27. Deploy Must Be Atomic at the Routing Layer
+All release files must be completely present before production routing changes.
+BUILD
+  ↓
+UPLOAD COMPLETE IMMUTABLE ARTIFACT
+  ↓
+VERIFY ARTIFACT EXISTS
+  ↓
+ATOMIC ROUTE PROMOTION
+28. Live Verification
+Deployment success is not sufficient. The exact live path through Product 007 must be verified after route promotion.
+Use Playwright against the deployed hostname.
+page loads
+expected release content is visible
+core navigation works
+mandatory acceptance test works
+browser console has no release-blocking error
+critical static assets load
+Publish safi/live for the released SHA.
+29. Automatic Rollback
+If live verification fails after promotion, the Harness shall restore the previous known-good Product 007 Valkey route.
+NEW SHA
+   ↓
+LIVE VERIFY FAILURE
+   ↓
+ROLLBACK
+The failed release artifact shall remain immutable in S3 for analysis. Do not delete the evidence.
+30. Deployment and Development May Overlap
+The system must permit release N to be deployed/verified while Change N+1 is being fitted/developed, Candidate N+2 is being tested, and Failure N-1 is being triaged/fixed.
+A deployment operation shall not globally stop Fitter, Developer, Tester, Triager or Fixer. This concurrency is a core acceptance requirement.
+31. Dyad Integration Boundary
+Dyad is the frozen development tool for this Product. Product 008 does not attempt to rewrite or replace Dyad.
+The Harness shall treat Dyad as the development environment used to modify the SPA.
+Git work
+   ↓
+Dyad development
+   ↓
+Git candidate
+   ↓
+Test
+   ↓
+Triage/Fix
+   ↓
+Qualify
+   ↓
+Release
+   ↓
+Deploy
+   ↓
+Verify
+32. Change Request / Fit Contract
+Every new product change shall begin with a small Change Request.
+id:
+title:
+goal:
+priority:
+acceptance:
+protected:
+out_of_scope:
+The Fitter may expand this into a more detailed Fit specification. The Fit specification belongs in Git so that it evolves with the work item and is auditable.
+33. Event Detection
+The Harness shall detect work through Git/repository events where available rather than requiring one global polling loop.
+branch/PR created
+new commit SHA
+check completed
+test failed
+triage published
+merge completed
+main changed
+deployment completed
+live verification completed
+Each event may cause one or more roles to become eligible for work.
+34. Idempotency
+Repeated receipt of the same event must not cause duplicate destructive actions.
+For example, a TEST FAILURE event for SHA X received twice must not create two competing Fixers if one valid lease already exists.
+Repeated deployment triggers for the same release SHA must not create inconsistent S3 contents or route state.
+35. Failure Recovery
+The system must tolerate:
+agent process crash
+lease expiration
+duplicate event
+stale branch observation
+stale triage
+failed build
+failed test
+failed S3 upload
+failed route update
+failed live verification
+No single dead agent shall permanently block the work item.
+36. Required Observability
+Every role action shall log at minimum:
+timestamp
+role
+agent-id
+work-id
+branch
+commit-sha
+action
+result
+Deployment records shall additionally include:
+artifact S3 path
+previous live SHA
+new live SHA
+live verification result
+rollback result if applicable
+Do not log secrets.
+37. Minimal Harness Commands
+safi-harness fitter
+safi-harness developer
+safi-harness tester
+safi-harness triager
+safi-harness fixer
+safi-harness release
+Each worker shall discover eligible work, claim a lease, perform its role, publish result/evidence, release the lease, and look for next eligible work.
+38. AI-First HOW TO
+Step 1 — Scaffold Controller
+Create the minimal TypeScript Harness.
+Implement Git repository inspection, exact SHA handling, check/state reading, Valkey lease acquisition, and work discovery.
+Do not start with a general-purpose workflow engine.
+Step 2 — Implement Role Eligibility
+Implement independent findNextForFitter(), findNextForDeveloper(), findNextForTester(), findNextForTriager(), and findNextForFixer().
+Each derives eligibility from Git state.
+Step 3 — Implement Exact-SHA Checks
+Make all test/triage evidence attach to the current candidate SHA.
+Prove that a new commit invalidates the previous candidate's readiness.
+Step 4 — Implement Leases
+Use atomic Valkey leases with TTL.
+Demonstrate two competing worker instances where only one claims a candidate.
+Step 5 — Implement Parallel Worktrees
+Give modifying agents isolated Git worktrees.
+Step 6 — Implement SPA Build/Test
+Build exact SHA.
+Run Playwright.
+Publish deterministic evidence.
+Step 7 — Implement Release Artifact
+Upload dist/ to s3://.../releases/<SHA>/.
+Step 8 — Implement Product 007 Promotion
+Update the Product 007 Valkey anonymous route to the exact release folder.
+Step 9 — Implement Live Verify
+Run Playwright against the production/test hostname.
+Step 10 — Implement Rollback
+If live verification fails, restore the previous route.
+Step 11 — Demonstrate Parallelism
+Run at least one worker of each role simultaneously.
+Step 12 — Commit
+Commit source, tests, documentation and evidence.
+39. Objective PASS/FAIL Acceptance Tests
+TEST 1 — Work Item Is a Branch
+Create work/001-demo-change.
+PASS: Harness recognizes it as a work item.
+FAIL: Work depends on manually registering it in another permanent workflow database.
+TEST 2 — Candidate Is Exact SHA
+Make a commit and record SHA-A.
+PASS: All candidate evidence references SHA-A exactly.
+FAIL: Evidence refers only to branch name.
+TEST 3 — New Commit Is New Candidate
+Push SHA-B to the same branch.
+PASS: SHA-B requires new candidate evidence.
+FAIL: SHA-B is treated as already tested merely because SHA-A passed.
+TEST 4 — Parallel Fitter and Developer
+Arrange Work A ready for Fitter and Work B ready for Developer; run both simultaneously.
+PASS: Both perform useful work concurrently.
+FAIL: One global workflow lock serializes them.
+TEST 5 — Parallel Tester and Triager
+Arrange SHA-C ready for test and SHA-D failed and ready for triage.
+PASS: Tester and Triager operate simultaneously.
+FAIL: Triager waits unnecessarily for Tester to finish unrelated work.
+TEST 6 — Parallel Fixer
+Arrange SHA-E triaged and SHA-F being tested; run Fixer and Tester together.
+PASS: Both operate independently.
+FAIL: Unrelated work is serialized.
+TEST 7 — Lease Collision
+Start two Tester workers against one eligible candidate.
+PASS: Exactly one acquires the lease.
+FAIL: Both execute the same claimed work concurrently.
+TEST 8 — Lease Recovery
+Kill the worker holding a lease and wait for TTL expiry.
+PASS: Another worker can claim the work.
+FAIL: Work remains permanently blocked.
+TEST 9 — Tester Is Read-Only
+Run failing browser tests.
+PASS: Tester records failure without modifying implementation files.
+FAIL: Tester alters code.
+TEST 10 — Triager Is Read-Only
+Give Triager a failing SHA.
+PASS: Triager publishes diagnosis but does not alter implementation.
+FAIL: Triager edits implementation.
+TEST 11 — Stale Triage Protection
+Triager diagnoses SHA-A; before Fixer begins, Developer advances branch to SHA-B.
+PASS: Fixer detects HEAD != SHA-A and does not blindly apply stale diagnosis.
+FAIL: Fix is applied as though branch had not changed.
+TEST 12 — Fix Produces New Candidate
+Fixer modifies failing SHA.
+PASS: Fixer creates new commit SHA-B and new testing is required.
+FAIL: Fix is treated as the same tested candidate.
+TEST 13 — Protected Test
+Cause a test failure.
+PASS: Developer/Fixer cannot obtain qualification merely by deleting or disabling the protected failing test.
+FAIL: Candidate passes by weakening tests.
+TEST 14 — Build Artifact Matches SHA
+Build qualified candidate SHA-X.
+PASS: Artifact is stored at s3://.../releases/SHA-X/ and can be traced to that SHA.
+FAIL: Artifact identity is ambiguous.
+TEST 15 — Artifact Immutability
+Attempt a later changed build under the same SHA release identity.
+PASS: Existing release is not silently rewritten.
+FAIL: Existing release content changes in place.
+TEST 16 — Production Promotion
+With live route pointing to SHA-A, release SHA-B.
+PASS: Product 007 Valkey route changes to SHA-B only after complete upload.
+FAIL: Route changes before complete artifact availability.
+TEST 17 — Live Verification
+After route promotion, run Playwright through the actual Product 007 hostname.
+PASS: Required acceptance behavior succeeds against the deployed release.
+FAIL: Deployment is considered successful without real-path verification.
+TEST 18 — Rollback
+Deliberately deploy a candidate that fails live verification.
+PASS: Route is restored to previous known-good SHA automatically.
+FAIL: Broken candidate remains live.
+TEST 19 — Failed Artifact Preserved
+After rollback inspect failed release.
+PASS: Failed release folder and evidence still exist for triage.
+FAIL: Failure evidence is destroyed.
+TEST 20 — Concurrent Development During Deployment
+While SHA-A is deploying/verifying, run Fitter, Developer or Tester on another work item.
+PASS: Other development activity continues.
+FAIL: Deployment imposes a global development lock.
+TEST 21 — Valkey Loss Does Not Erase Development Truth
+Remove transient Valkey work state.
+PASS: Important candidate/work history can be rediscovered from Git/PR/check state.
+FAIL: Permanent development history is lost.
+TEST 22 — Multiple Roles All Running
+Start Fitter, Developer, Tester, Triager, and Fixer simultaneously with prepared independent eligible work.
+PASS: All five can perform work concurrently.
+FAIL: Any role is forced behind a global serialized workflow.
+40. Dogfood Demonstration
+Use a real Dyad-developed SPA.
+Create at least three work items, for example:
+Work 1: change home-page headline
+Work 2: add navigation item
+Work 3: introduce deliberate test failure then repair it
+Demonstrate concurrently:
+Fitter
+  fitting Work 3
+
+Developer
+  implementing Work 2
+
+Tester
+  testing Work 1 candidate
+
+Triager
+  analyzing another failing candidate
+
+Fixer
+  repairing a previously triaged candidate
+Then take one candidate through QUALIFY → MAIN → BUILD → S3 RELEASE SHA → PRODUCT 007 ROUTE PROMOTION → LIVE PLAYWRIGHT VERIFY.
+Also demonstrate one deliberate live failure and automatic rollback.
+41. Deliverables
+Harness Source
+Complete TypeScript source.
+Role Workers
+Runnable modes for Fitter, Developer, Tester, Triager, Fixer, and Release/Deploy.
+Git Integration
+Code/scripts implementing branch discovery, SHA handling, evidence/check publication, exact-SHA verification, and protected-main integration.
+Valkey Lease Module
+Atomic claim/release/TTL behavior.
+SPA Test Fixture
+A small working React/Vite SPA editable through Dyad.
+Playwright Tests
+Protected browser acceptance tests.
+Release Module
+SHA-addressed S3 upload.
+Product 007 Integration
+Valkey route promotion and rollback.
+Documentation
+README describing Git model, role model, eligibility rules, lease model, candidate model, release process, rollback process, and test procedure.
+Evidence
+Terminal/log evidence showing all mandatory acceptance tests.
+Git
+All Product-008 work committed. No uncommitted source modifications at delivery.
+42. Aggressive Out of Scope
+Kubernetes
+ECS
+Fargate
+generalized workflow engines
+Temporal
+Airflow
+Jenkins
+multi-cloud deployment
+alternate SPA frameworks
+alternate browser-test frameworks
+alternate Git systems
+custom source-control implementation
+custom merge algorithm
+generalized project-management system
+user authorization system
+Cedar
+Seats
+Grants
+Comptroller
+production database migrations
+backend continuous deployment
+mobile-app deployment
+generalized AI workforce orchestration
+semantic GUID research
+Product 008 is specifically Git-native parallel SPA continuous development and deployment. Do not broaden it.
+43. Definition of Done
+Dyad is used as the SPA development environment.
+Work is represented by Git branches/PRs.
+Candidates are represented by exact immutable commit SHAs.
+Fit, build, test and triage evidence attaches to exact SHAs.
+Fitter, Developer, Tester, Triager and Fixer operate independently.
+All five roles can be running concurrently.
+Role readiness is computed rather than controlled by one generic READY flag.
+NEXT is independently derived for each role.
+Valkey provides only ephemeral claims/leases.
+Losing Valkey does not destroy permanent development truth.
+Modifying agents use isolated worktrees/checkouts.
+Tester does not modify implementation.
+Triager does not modify implementation.
+Stale triage cannot blindly modify a newer branch HEAD.
+Fixer creates a new candidate SHA.
+Qualified candidates produce SHA-addressed immutable S3 artifacts.
+A qualified main SHA can be promoted through Product 007.
+Deployed SPA is verified through the real Smart Proxy path.
+Failed live verification automatically rolls back.
+Previous known-good release remains available.
+Development of unrelated work can continue during deployment and verification.
+All mandatory tests pass.
+Source, tests, documentation and evidence are committed.
+Anything less is not Product 008.
+44. Seven Hours or Nothing
+The Product shall be completed within seven working hours.
+The developer shall not spend time reconsidering Git vs another workflow model, Playwright vs Cypress, React/Vite vs another SPA stack, Valkey vs another lease mechanism, S3 vs another static deployment destination, or Dyad vs another SPA development environment. Those decisions are already made.
+Use AI aggressively. Reuse stable open-source libraries. Keep the implementation small.
+The target is not to build a generalized CI/CD product.
+The target is to prove this specific model:
+Fitter, Developer, Tester, Triager and Fixer work continuously and concurrently over Git branches and immutable commit SHAs; Git checks provide evidence; Valkey provides only temporary claims; qualified SHAs become immutable S3 releases; Product 007 promotes them; deployed failures roll back automatically.
+That is Product 008.

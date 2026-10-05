@@ -1,77 +1,56 @@
-# Product 008 — partial delivery, not Stage A completion
+# Product 008 — bounded workers implemented; live SOW acceptance pending
 
-## Confirmed context
+## Active scope
 
-- Repository: `hirakroya50/vigilant-kraken-blink`; no new repository creation is required by the accepted plan.
-- Trusted initial runner: user's Mac; credential-free candidate execution must use Docker.
-- Developer/Fixer editing and Fit acceptance remain human-approved through Dyad.
-- AI: OpenAI, configurable `gpt-4.1`, subject to runtime access validation.
-- Historical baseline: `28968a37045c11d8e30fcf3194257293641c940f`. HEAD observed before this increment: `ce29bdd046f1150701d7ce810af386a91aa63577`; neither is a claim about the eventual committed increment SHA.
+The client excludes **Product 007 and S3 uploads for now**. Active acceptance remains cases **1–13, 21 and 22** (15 Stage A cases). Cases 14–20 are deferred, not passed. Full Product 008 completion is not claimed.
 
-## Existing fixture and bootstrap
+See [SOW-AUDIT.md](SOW-AUDIT.md) for the supplied Word SOW comparison and [WORKERS.md](WORKERS.md) for the implemented commands, authority and remaining gaps. The unchanged live registry still has **0 recorded passes out of 15 active cases**, and all 22 entries remain blocked.
 
-Responsive Bun & Ember SPA, demo roles/payments, validated browser persistence/reset, integer-cent pricing, idempotent simulated checkout and current-menu revalidation remain unchanged. Desktop/mobile browser acceptance source exists. Separate Node contracts, discovery/eligibility helpers, Valkey leases and guarded worktree adapters are present; none alone establishes worker readiness or a protected release gate.
+## Implemented in this continuation
 
-## New M0 foundations implemented
+- Replaced unsafe unfinished worker scaffolding that fabricated source edits and published successful test/live checks without execution.
+- Independent Fitter, Developer, Tester, Triager and Fixer modes with role-specific fresh GitHub discovery, priority/age ordering, per-candidate renewable leases, shared narrow writer leases, collision fallback, bounded polling, signal/lease-loss cancellation, cleanup and structured role/work/branch/SHA logs.
+- Fitter uses bounded exact-Git source and explicit AI cost consent; drafts one Fit-only commit and awaits independent exact-Fit-head GitHub collaborator review before accepted publication.
+- Developer/Fixer produce private bounded isolated Dyad handoffs and require explicit human acknowledgement/completion. Current leases, unchanged head/Fit/diagnosis, clean single-child commit, protected diffs and bounded blob/tree identity are verified before App publication. Only a new untested role candidate is published.
+- Retain cancelled/expired/incomplete human checkouts instead of deleting human work. Expired sessions cannot resume authority.
+- Tester runs the actual credential-free protected Docker build/browser path and publishes exact-SHA real results. Fresh Fit conformity is verified on implementation descendants. Missing protected acceptance title coverage on either Chromium project yields neutral test evidence, never qualification.
+- Triager reads same-SHA failures, verified available local manifest plus bounded browser/build logs, application Git blobs and parent diff; explicit local human review is required before read-only exact-SHA diagnosis publication. No implementation or branch mutation.
+- Fixer rejects stale heads/diagnoses and older failures superseded by successful checks. A repair produces a new SHA requiring fresh tests.
+- Change Request/Fit contracts now retain optional goal, priority, protected behavior, constraints/dependencies and out-of-scope fields.
+- Reconciliation supports actual unaccepted Fit draft records without treating their self-asserted fields as approval.
+- Provenance-aware qualification inspection plus explicit exact-head native GitHub merge-queue enrollment. Strict App-bound required checks and an active queue rule are required; no settings are changed, no direct merge/bypass is attempted.
+- Release command explicitly rejects deferred scope; no fake S3/live/release checks.
+- **24 new offline tests**: 20 worker/safety cases plus four actual temporary-Git human-completion cases. These supplement 85 existing tests.
 
-- Explicit non-mutating `.env` loading and validated configuration with field-only errors.
-- External owner-restricted RSA PEM checks, GitHub App authentication with SDK token refresh and bounded request timeouts.
-- Live App/installation identity, suspension, repository scope, token-expiry and configured permission verification paths.
-- App-first discovery; explicit labelled development PAT fallback cannot publish trusted checks.
-- Publication adapter revalidates App authorization and lease ownership before writes. Full provenance/lineage readiness remains pending.
-- Bounded `doctor` probes for App, Valkey PING, OpenAI visibility/optional authorized inference, Docker and Chromium. No disposable write diagnostics or protection changes.
-- External absolute-path RSA PEM diagnostics and issued-token permissions validated in addition to installation permissions.
-- OpenAI SDK adapter for schema-constrained Fit/diagnosis drafts: input/output/call caps, timeout, zero automatic retries, official endpoint, SDK payload logging off, scope enforcement and mandatory human-review status.
-- Cost-consented `ai-propose` command writes private local drafts only; declared source SHA is not independently verified. It is not a Fitter/Triager lifecycle.
-- **25 offline unit tests executed and passed**, including configuration/PEM boundaries, App identity/scope/permissions/expiry, error redaction, PAT denial, and invalid/refused/out-of-scope AI output.
-- Separate fixture/harness builds and offline/live integration commands; aggregate production build runs offline units only. Fixture CI does not run units twice.
-- Key/local-draft exclusions and [configuration](CONFIGURATION.md)/[AI proposal documentation](AI.md).
+## Verified locally
 
-## M0 remains incomplete
+- Workspace type checks passed.
+- Isolated production fixture build passed.
+- Strict Node harness TypeScript compilation passed.
+- **109 offline tests passed, 0 failed, 0 skipped.**
+- First full verification exposed an incorrect request digest in the new offline human-completion fixture; corrected it to use the real intake packet digest, then the entire build/suite passed.
+- The tests execute real local Git commits/trees/diffs and exercise simulated provider/Valkey scenarios. They do **not** prove actual GitHub reviews, live worker concurrency, Docker execution or SOW acceptance.
+- No live provider writes/checks, real human sessions, protection changes, native queue enrollment, Docker execution, S3 upload, deployment or registry passes were performed by this continuation.
 
-The diagnostic paths were not executed against the user's credentials in this implementation session. Runtime App authentication, permission exercise, OpenAI billing/model access and isolated-runner prerequisites are not proven. Full retry/rate-limit policy and live token-refresh validation remain pending. No committed npm lockfile exists; fixture CI still uses the existing pnpm lockfile. Frozen npm reproducibility is not established.
+## Existing foundations retained
 
-Earlier successful GitHub discovery and local Valkey collision/renewal/release/expiry recovery are **reported local adapter evidence**, not worker/SOW passes and not new App validation.
+Responsive Bun & Ember React/Vite demo, browser-only validated persistence, demo roles/payments and integer-cent prices; App authentication/configuration/doctor; bounded OpenAI drafts; manual/issue intake and provenance; read-only Git reconstruction/event hints; guarded worktrees/diffs; credential-free protected runner, pinned image/control identities and console/network evidence; case-specific evidence registry.
 
-## Stage A continuation
+Known repository: `hirakroya50/vigilant-kraken-blink`. Trusted initial runner: user's Mac with Docker isolation. Developer/Fixer editing and Fit acceptance stay human-approved through Dyad/GitHub. Configurable OpenAI `gpt-4.1` requires actual access/billing validation. Existing user-reported setup/adapter results are not independently rerun live acceptance here. Existing local runner-image/run files are not automatically approved for this changed control; historical failed builds do not establish completion.
 
-Current requested scope is Stage A only; S3, Product 007 and production deployment are deferred, not passed. The user reports Mac setup validation complete; this is user-reported readiness, not independently rerun diagnostics or SOW evidence.
+## Still not complete
 
-- Local protected runner implemented: reviewed exact-SHA image preparation, Git-blob snapshot export, protected-file comparison, separate network-disabled build/browser containers, bounded artifacts/evidence and local provenance manifests.
-- Added explicit live canary smoke and protected browser integration operations. They require reviewed committed control, a matching digest-pinned official Playwright base and explicit candidate selection; no implicit success or current-HEAD qualification.
-- Browser tests now collect console/page/HTTP/network evidence. Protected execution uses production output and image-pinned tests, not candidate dev/server/test scripts.
-- Local runner results do not publish GitHub qualification or certify Stage A. Runtime Docker/browser execution remains unmeasured in this implementation session. See [PROTECTED-RUNNER.md](PROTECTED-RUNNER.md).
-- Manual/issue App-authenticated intake creates a request commit, work branch and draft PR under a renewable repository/request lease. Issue provenance is committed with requirements. Replays preserve current progress/closed PRs; changed issue content, collisions and ambiguous writes are rejected/reconciled without force-updates.
-- The GitHub issue form and explicit write-consented issue command are implemented. Issues:read is required; no App permission/settings change or automatic intake was performed.
-- Read-only reconstruction verifies exact Git blob bytes, distinguishes orphan/closed work, detects stale heads/source/diagnosis and observes same-SHA App checks without granting role readiness. It does not use Valkey or a workflow database.
-- Added read-only human Fit-review verification: an exact-head non-author repository collaborator approval must cover a Fit-only commit directly on the immutable request. Self-asserted reviewer fields, bots, outsiders, stale approvals and unresolved change requests do not count.
-- Bounded/local polling and own-repository event-file wakeups re-fetch remote truth. Event files are untrusted hints, not authenticated webhooks or approval. Polling honors bounded provider backoff and never retries privileged writes. See [INTAKE-RECONCILIATION.md](INTAKE-RECONCILIATION.md) and [FIT-REVIEW.md](FIT-REVIEW.md).
-- Guarded pushes require explicit application paths and raw exact-SHA diff validation; symlinks, executables, submodules and protected deletions disguised as renames are rejected. Git hooks/fsmonitor are disabled for control operations.
-- `evidence --stage-a` reports the 15 Stage A cases without deleting the seven deferred cases or pretending registry validation verifies live evidence.
-- Offline intake, registry and local Git attack tests are added. Verification results are recorded in LOCAL-VERIFICATION.md after execution.
-- See [STAGE-A.md](STAGE-A.md) for operations, recovery and remaining boundaries.
-
-## Implementation still pending
-
-- M1: human review of committed control and base image digest, actual Docker isolation/browser runs, attack proof and artifact/evidence measurement. Runner code exists; execution is not yet measured here.
-- M2: live issue/reconstruction validation, authenticated event dispatch, accepted-Fit/provenance readiness, branch writer locks and durable role recovery. Manual/issue intake and read-only reconstruction/polling are implemented; neither authenticates human completion.
-- M3–M4: all five role lifecycles, bounded reviewed role AI, human claim/acknowledge/complete, trusted Tester publication/lease-loss cancellation, read-only diagnosis and stale-safe repair. Reserved role commands still exit blocked; no fake checks or handoffs.
-- M5: useful overlapping work, actual GitHub/Valkey recovery/security proof and the 15 Stage A live cases. Protection configuration requires separate explicit approval.
-- M6–M7: S3, Product 007 integration and production deployment are excluded from the current increment and deferred. Full-SOW acceptance still requires their seven cases later.
-
-## External gates
-
-| Gate | Required evidence |
+| Remaining item | Boundary |
 | --- | --- |
-| GitHub App | Local external PEM, installation/repository identity, runtime token validation, approved write/check diagnostics |
-| Trusted Mac | Reviewed control revision; Docker/Chromium readiness and candidate isolation attacks |
-| Valkey | Reachable configured endpoint, lease-loss/recovery and concurrent actual workers |
-| OpenAI | Actual configured model inference/billing and reviewed bounded role output |
-| Humans | Fit review plus acknowledged real Developer/Fixer sessions on independent work |
-| Stage B | S3 bucket/region/runtime IAM, actual Product 007 contract, real hostname |
+| Live independent useful work for all five roles; lease collision/crash/recovery; stale-head and protected-test attacks; Valkey-loss reconstruction | Must actually execute on approved GitHub/Valkey/Mac and record durable case evidence |
+| Approved committed current control/image and real desktop/mobile protected execution | Existing code/local image is insufficient without fresh review and actual measurement |
+| Human Fit approval and actual Dyad acknowledged Developer/Fixer edits | Cannot be manufactured by offline fixtures |
+| Candidate synchronization | Current workers require operator-fetched exact commits; automatic authorized synchronization is not implemented |
+| Authenticated event dispatch | Current own-repository event files remain untrusted hints plus periodic fresh discovery; no authenticated webhook/dispatcher installed |
+| Protected-main integration completion | Inspection/enrollment implemented; actual rules/API availability, trusted merge-group/main test dispatch and successful native integration still pending |
+| Frozen npm reproducibility | Existing frozen pnpm lockfile remains; committed npm lockfile migration still pending |
+| GitHub token refresh/permissions and OpenAI runtime budget/model access | Adapter paths present; live operational exercise/approval still required |
+| Final commit and clean-tree SOW delivery | No final SHA or clean-tree delivery is asserted here; pre-existing uncommitted work was preserved |
+| Stage B | Product 007, S3 artifacts, real hostname, promotion/live verification/rollback deferred by client |
 
-## Verification and completion boundary
-
-Latest workspace type checking, isolated fixture production build, strict harness compilation and all **76 offline tests** passed (0 failed, 0 skipped). Tests include actual temporary Git snapshots/diffs and bounded file-export checks, simulated GitHub scenarios for issue intake/reconciliation, and strict exact-head human-review selection/Fit-only commit checks. HTTP/review fixtures are not live provider or human evidence. Docker image preparation, isolation smoke, browser acceptance and live provider diagnostics were not executed here. See [LOCAL-VERIFICATION.md](LOCAL-VERIFICATION.md).
-
-The evidence registry remains unchanged: all 22 live cases blocked, including all 15 Stage A cases. No live check, branch/PR, remote artifact, deployment or protection setting was published by this increment. Stage A cannot be called complete until its 15 cases have verified durable real evidence and final commit/clean-tree gates pass. Full Product 008 completion additionally requires the seven deferred Stage B cases.
+The seven-hour requirement cannot be retrospectively certified. **This increment completes the bounded worker implementation and its offline verification, not all in-scope SOW deliverables or live acceptance.**

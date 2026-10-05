@@ -2,41 +2,44 @@
 
 ## Authority
 
-Branch + PR is the work item; the full 40-character commit SHA is the candidate. Request/Fit belong under `changes/<id>/`. Checks and repository-associated records hold durable evidence. Valkey keys are temporary claims only: `safi:leases:<role>:<sha>` or a narrow branch-writer identity. No global NEXT pointer, permanent READY flag, or workflow database.
+Branch + PR is the work item; the full 40-character commit SHA is the candidate. Request/Fit belong under `changes/<id>/`. GitHub checks and Git history hold durable evidence. Valkey holds temporary owner-safe candidate/branch claims only. No global NEXT pointer, permanent READY flag or workflow database.
 
-The bootstrap discovery helper does not validate an accepted Fit, remote head freshness, branch review or an active lease. Do not use it as release authorization. A worker must implement these additional checks before publishing results.
+Use [WORKERS.md](WORKERS.md) for implemented role/action interfaces. Pure check helpers or check names alone never authorize qualification. Fresh accepted Fit provenance, current candidate, trusted App check identity, actual protected-run evidence and full acceptance coverage are required.
 
-## Exact-SHA and trusted gate requirements
+## Exact-SHA protected execution
 
-- Commit the Fit before attaching `safi/fit`; every changed SHA requires new conformity/build/test evidence.
-- Reject unauthorized protected source, tests, contracts, workflow, dependency and harness edits. The starter path policy intentionally allows only enumerated application file paths; broadening it requires protected review.
-- Trust checks from the configured App identity, not names alone. Keep a separately protected harness/acceptance checkout outside the candidate worktree.
-- Candidate scripts are untrusted. Build/browser processes receive an allowlisted environment, no AWS/Valkey/AI/repository-write secrets, no persisted Git credentials, and no privileged workflow context. The Git subprocess wrapper also excludes provider tokens from its environment.
-- Never run candidate PR code under `pull_request_target` or mount a privileged runner's credentials into its sandbox.
-- Triager reports belong on the failed SHA check, not a report commit on the candidate branch.
-- Protected feature checks gate integration; the resulting main SHA must separately qualify for release.
+- Commit Fit before attaching `safi/fit`; new implementation SHA requires fresh conformity/build/browser/regression evidence.
+- Accepted Fit review must be independent, human, same-repository, exact-Fit-head and non-author. Request/source/Fit bytes remain immutable along the bounded linear candidate lineage.
+- Reject unauthorized source, tests, contracts, workflows, dependency and harness edits. Broadening application scope requires protected review.
+- Build/browser processes execute in separate network-disabled containers with read-only host mounts, pinned image/tests/dependencies, no capabilities and no forwarded provider credentials. Never run candidate code in a privileged host, `pull_request_target` or credentialed checkout.
+- Triager diagnosis belongs on the failed exact-SHA check, not a branch-changing diagnosis commit.
+- Missing protected test coverage is not a pass. New assertions require separately reviewed protected control.
+- Qualification is feature evidence; native queue enrollment is not a merge. The synthetic/merged main SHA still needs independently trusted checks. Current fixture CI is not that protected dispatcher.
 
-## Planned human session protocol (not yet implemented)
+## Human sessions
 
-Developer/Fixer must have separate claim, acknowledgement and completion operations. A local active session renews its lease; no Actions job waits indefinitely for a human. Every handoff contains work ID, request/Fit links, role, target SHA, baseline SHA, affected paths, isolated checkout location, Dyad import/open instructions and completion evidence identity. Fixer adds diagnosis and failed check URLs.
+Developer/Fixer actively hold renewable candidate/writer claims while the same local OS user reviews the handoff and edits the isolated checkout in Dyad. Explicit acknowledgement precedes completion. Completion checks live ownership/deadline, unchanged head/Fit/diagnosis, clean single-child commit, bounded permitted regular-file diff and exact uploaded blob/tree identity. New App commit SHA is published only as untested role completion.
 
-Completion requires current ownership, active acknowledged session, unchanged expected remote head, a new ancestral implementation SHA, permitted diff, no protected path weakening, and expected-head push. Expired sessions cannot resume privileged publication: reacquire and revalidate. This must be implemented before the worker modes can be declared functional.
+Expired/cancelled/interrupted checkouts are retained, not force-deleted. They never retain privileged session authority. After recovery acquire fresh work and manually re-evaluate/transfer appropriate edits; do not replay old action files. The local human boundary is not production multiuser authentication.
 
-## Lease recovery
+## Lease and write recovery
 
-- A worker uses a unique owner token and TTL. Only the owner renews/releases with atomic comparison.
-- Heartbeat errors or ownership loss stop privileged work. Renewal must be active while humans edit.
-- After crash/TTL expiry another worker may acquire; an old owner cannot remove its claim.
-- A role lease is not a branch-writer lock. Writers must also hold narrow branch coordination and use expected-head pushes.
-- The supplied adapter never clears namespaces. For a lease-loss experiment delete only the transient `safi:leases:` keys through an authorized operator. **Never delete Product 007 routing keys or flush Valkey.**
-- Rediscover truth from GitHub branches/PRs/checks after Valkey loss, not from reconstructed permanent lease state.
+- Only the unique current owner can atomically renew/release. TTL expires on worker death; old owners cannot delete replacement leases.
+- Workers skip occupied candidates and try unrelated work. No global role lock.
+- Heartbeat errors abort waiting/container work and prevent subsequent privileged publication. Containers are cleaned up by generated identity.
+- Writers share a narrow branch-writer claim, re-fetch expected head and perform non-force updates of one child commit.
+- Git/API writes cannot be rolled back transactionally across checks. A crash may leave a valid commit or partial check batch; reconstruct GitHub truth before recovery. Never blindly retry an ambiguous privileged write.
+- SIGINT/SIGTERM cancel workers and disconnect Valkey. Retain private evidence/manifests and incomplete human checkouts.
+- The adapter never flushes namespaces. For a lease-loss experiment only authorized transient `safi:leases:` keys may be removed. **Never flush Valkey or delete Product 007 route keys.**
 
-## Events and bounded workers still to deliver
+## Events and runtime preparation
 
-Validate webhook/event repository identity; use independent event wakeups plus periodic reconciliation. Idempotency depends on check/evidence IDs and expected heads. Normal GitHub workflow-token pushes may not start follow-on workflows: explicitly dispatch bounded next work or use the authorized App, with loop prevention. Do not infer concurrency from five idle processes.
+Workers accept repository-scoped event-file hints and independently perform fresh bounded discovery. Hints never provide authenticated approval, authoritative SHAs or write instructions. Authenticated event dispatch is not installed. Normal read-only discovery observes bounded provider backoff; failed executions exit for explicit reconciliation rather than retrying writes.
 
-## Durable evidence
+An authorized operator must fetch exact candidates into the trusted repository before source/worktree/runner use. Automatic authorized synchronization is not implemented. Existing local Docker records must be reviewed against the newly committed current control; never infer freshness from their mere existence.
 
-Each live case needs timestamp, work ID, branch, full SHA, worker/session identities, GitHub check URLs, logs and relevant artifacts. Publish concise durable content in the exact-SHA check; traces/artifacts supplement it. Evidence validators catch missing metadata but cannot prove that URLs refer to actual successful infrastructure actions; those require live review.
+## Durable acceptance evidence
 
-No SOW case is currently passed. All Stage B cases remain blocked until real contracts and infrastructure are available.
+Each live case requires timestamp, work identity/branch, exact SHA, actual worker/session identities, exact-SHA GitHub check URLs, logs and relevant artifact references. Concise check summaries have runner/lineage/manifest identities; preserve private full logs and traces for independent review/export. Registry schema validation cannot prove the infrastructure action occurred.
+
+All 15 active Stage A cases remain unpassed here. Cases 14–20 are deferred. See [STATUS.md](STATUS.md) for verified offline results and remaining implementation/external gates.

@@ -1,4 +1,4 @@
-import { diagnosisSchema, fitSchema, workIdSchema } from "../contracts/index.js";
+import { diagnosisSchema, fitSchema, fitDraftRecordSchema, workIdSchema } from "../contracts/index.js";
 import type { GitHub } from "../git/github.js";
 import { intakePacket } from "../intake/index.js";
 import { issueSourceSchema, loadIssueRequest, sourceContent } from "../intake/issue.js";
@@ -91,7 +91,7 @@ export async function reconcileOnce(github: GitHub, trustedAppId: number, after?
         }
       } else if (workId.startsWith("issue-")) throw new WorkError("Issue work has no captured source provenance.");
       const fitRecord = await read(`changes/${workId}/fit.json`);
-      const fit = fitRecord === undefined ? undefined : fitSchema.parse(fitRecord);
+      const fit = fitRecord === undefined ? undefined : fitDraftRecordSchema.or(fitSchema).parse(fitRecord);
       if (fit && fit.workId !== workId) throw new WorkError("Fit identity does not match the work branch.");
       const diagnosisRecord = await read(`changes/${workId}/diagnosis.json`);
       const diagnosis = diagnosisRecord === undefined ? undefined : diagnosisSchema.parse(diagnosisRecord);

@@ -9,7 +9,7 @@ const paths = z.array(applicationPath).min(1).max(30).refine(list => new Set(lis
 const source = z.array(z.object({ path: applicationPath, content: z.string().max(18000) }).strict()).min(1).max(30).refine(list => new Set(list.map(file => file.path)).size === list.length);
 export const fitInputSchema = z.object({
   kind: z.literal("fit"), candidateSha: shaSchema, request: requestSchema,
-  permittedPaths: paths, files: source,
+  permittedPaths: paths, files: source, protectedTests: z.array(z.string().min(1).max(500)).max(200).optional(),
 }).strict().refine(input => input.files.every(file => input.permittedPaths.includes(file.path)), "Source must stay within the trusted permitted paths.");
 export const diagnosisInputSchema = z.object({
   kind: z.literal("diagnosis"), workId: workIdSchema, candidateSha: shaSchema,

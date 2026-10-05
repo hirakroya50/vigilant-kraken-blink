@@ -32,23 +32,27 @@ Browser source stays in `src/pages`, `src/components/burger`, and `src/lib/burge
 | `test:integration` | Opt-in live Valkey and Docker runner tests; explicit inputs required, otherwise skipped |
 | `test:runner:live` | Live pinned Docker isolation smoke and exact-SHA protected production/browser execution |
 | `test:browser` | Local development-server Playwright mobile/desktop fixture tests |
-| `harness` | CLI: `doctor`, `ai-propose`, `intake`, `intake-issue`, read-only `reconcile`, `evidence` (`--stage-a` scope), App-first `discover`, `lease-probe`, `runner-prepare`, `runner-smoke`, `runner-test` |
+| `harness` | CLI: diagnostics/intake/reconciliation/evidence, protected runner, independent five-role workers, human actions and protected integration inspection/enrollment |
 
-Worker commands currently return blocked (exit 2), never synthetic successes. The evidence command exits 2 until the selected cases have schema-valid recorded passes; registry validation does not independently verify referenced live evidence. The lease probe tests a real endpoint but labels its scope adapter-smoke-only, not SOW completion. GitHub App SDK authentication now loads the external owner-only RSA PEM and refreshes installation tokens. Live credential verification still requires the trusted runner.
+Independent `fitter`, `developer`, `tester`, `triager` and `fixer` modes now implement bounded renewable-lease lifecycles. They require explicit write consent; AI roles additionally require cost consent. Developer/Fixer wait for acknowledged human Dyad edits, Tester publishes actual isolated execution results, and Triager requires reviewed read-only diagnosis. No worker fabricates source edits or test success. `release` is explicitly deferred. See [worker contracts and recovery](docs/product-008/WORKERS.md).
 
-Manual/issue intake requires explicit write consent and creates/reconciles a request commit, work branch and draft PR; it does not approve Fit or tests. Issue source is captured with requirements. Read-only reconciliation reconstructs exact GitHub records without Valkey, handles event-file hints/local polling and never grants role readiness from check names alone. See [intake/reconciliation boundaries](docs/product-008/INTAKE-RECONCILIATION.md) and [Stage A recovery](docs/product-008/STAGE-A.md).
+The evidence command exits 2 until the selected cases have schema-valid recorded passes; registry validation does not independently verify referenced live evidence. The lease probe labels its scope adapter-smoke-only. GitHub App SDK authentication loads the external owner-only RSA PEM and refreshes installation tokens; live credential verification still requires the trusted runner.
 
-`ai-propose` requires explicit cost consent and produces an unapproved local draft only. Read [configuration](docs/product-008/CONFIGURATION.md) and [AI limits/review boundaries](docs/product-008/AI.md) before using it. Accepted Fit/diagnosis checks and five-role lifecycles are not implemented.
+Manual/issue intake requires explicit write consent and creates/reconciles a request commit, work branch and draft PR; it does not approve Fit or tests. Issue source is captured with requirements. Read-only reconciliation reconstructs exact GitHub records without Valkey, handles event-file hints/local polling and never grants role readiness from check names alone. See [intake/reconciliation boundaries](docs/product-008/INTAKE-RECONCILIATION.md).
 
-The current Dyad dependency flow retains a pnpm lockfile; migration to committed npm lockfile is still pending. Development CI uses this existing lockfile until that migration is completed.
+`ai-propose` remains an unapproved local draft operation. Role Fit publication requires independent exact-head GitHub review; diagnosis requires explicit local human review. Test qualification requires every accepted assertion to map to an actually passing protected test title on desktop/mobile Chromium. Read [configuration](docs/product-008/CONFIGURATION.md) and [AI limits](docs/product-008/AI.md).
+
+**Verified: isolated production fixture/harness build and 109 offline tests passed. Live Stage A: 0/15 recorded passes.** Automatic authorized candidate synchronization, authenticated event dispatch, trusted merge-group/main gate execution, actual useful five-role concurrency and clean committed SOW delivery remain unresolved. The existing pnpm lockfile remains; committed npm lockfile migration is pending.
 
 ## Product 008 documentation
 
-- [Delivery status, blockers and repository creation](docs/product-008/STATUS.md)
-- [Trusted execution and human handoff requirements](docs/product-008/RUNBOOK.md)
+- [SOW-to-code audit and plan](docs/product-008/SOW-AUDIT.md)
+- [Delivery status and remaining blockers](docs/product-008/STATUS.md)
+- [Implemented workers and human sessions](docs/product-008/WORKERS.md)
+- [Trusted execution and recovery](docs/product-008/RUNBOOK.md)
 - [Protected Docker production/browser runner](docs/product-008/PROTECTED-RUNNER.md)
 - [Machine-readable live SOW evidence](docs/product-008/evidence.json)
 
-The local runner requires reviewed committed control and a digest-pinned official Playwright base. Separate credential-free build/browser containers produce bounded local artifacts/evidence, not GitHub qualification or live SOW passes.
+The local runner requires reviewed committed control and a digest-pinned official Playwright base. Standalone runner operations produce bounded local artifacts; the Tester worker can publish verified real-result GitHub checks after fresh lineage/coverage validation. Neither operation automatically certifies a live SOW case.
 
-Stage B deliberately has no mock release implementation. S3 details and Product 007's actual routing contract are required before implementation.
+Stage B deliberately has no mock release implementation. S3 uploads and Product 007 are excluded by the current request, not passed.

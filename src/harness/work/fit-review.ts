@@ -23,9 +23,9 @@ export function selectHumanFitApproval(reviews: ReviewDecision[], head: string, 
   return approval;
 }
 export function assertFitOnlyCommit(compare: { status: string; ahead_by: number; merge_base_commit: { sha: string }; commits: { parents: { sha: string }[] }[]; files?: { filename: string }[] }, requestSha: string, head: string, workId: string) {
-  if (compare.status !== "ahead" || compare.ahead_by !== 1 || compare.merge_base_commit.sha !== requestSha || compare.files?.length !== 1 || compare.files[0].filename !== `changes/${workId}/fit.json` || compare.commits.length !== 1 || !compare.commits[0].parents.some(parent => parent.sha === requestSha)) throw new WorkError("Fit review branch must contain exactly one Fit-only commit directly on the immutable request SHA.");
+  if (compare.status !== "ahead" || compare.ahead_by !== 1 || compare.merge_base_commit.sha !== requestSha || compare.files?.length !== 1 || compare.files[0].filename !== `changes/${workId}/fit.json` || compare.commits.length !== 1 || compare.commits[0].parents.length !== 1 || compare.commits[0].parents[0].sha !== requestSha) throw new WorkError("Fit review branch must contain exactly one Fit-only commit directly on the immutable request SHA.");
 }
-async function jsonBlob(github: GitHub, sha: string, path: string, required = true) {
+export async function jsonBlob(github: GitHub, sha: string, path: string, required = true) {
   const { owner, repo } = github;
   const commit = (await github.api.git.getCommit({ owner, repo, commit_sha: shaSchema.parse(sha) })).data;
   const tree = (await github.api.git.getTree({ owner, repo, tree_sha: shaSchema.parse(commit.tree.sha), recursive: "1" })).data;
@@ -42,16 +42,25 @@ async function jsonBlob(github: GitHub, sha: string, path: string, required = tr
   return { value, sha: entry.sha };
 }
 
-export async function inspectFitReview(github: GitHub, id: string) {
+export async function inspectFitReview(github: GitHub, id: string, reviewedSha?: string) {
   const workId = workIdSchema.parse(id);
   const branch = `work/${workId}`;
   const { owner, repo } = github;
-  const head = await github.head(branch);
+  const currentHead = await github.head(branch);
+  const head = reviewedSha === undefined ? currentHead : shaSchema.parse(reviewedSha);
   const pullRequests = (await github.api.pulls.list({ owner, repo, state: "open", head: `${owner}:${branch}`, per_page: 100 })).data;
   const matching = pullRequests.filter(pr => pr.head.ref === branch && pr.head.repo?.full_name.toLowerCase() === `${owner}/${repo}`.toLowerCase());
   if (matching.length !== 1) throw new WorkError("Human Fit review needs exactly one open same-repository work PR.");
   const pull = matching[0];
-  if (pull.head.sha !== head || pull.draft) throw new WorkError("Work PR must be ready for review at the current branch head.");
+  if (pull.head.sha !== currentHead || pull.draft) throw new WorkError("Work PR must be ready for review at the current branch head.");
+  if (head !== currentHead) {
+    const lineage = (await github.api.repos.compareCommitsWithBasehead({ owner, repo, basehead: `${head}...${currentHead}`, per_page: 100 })).data;
+    if (lineage.status !== "ahead" || lineage.merge_base_commit.sha !== head || lineage.ahead_by > 50 || lineage.commits.length !== lineage.ahead_by) throw new WorkError("Reviewed Fit must be a bounded ancestor of the current candidate.");
+    for (const path of [`changes/${workId}/request.json`, `changes/${workId}/fit.json`, `changes/${workId}/source.json`]) {
+      const [original, current] = await Promise.all([jsonBlob(github, head, path, path.endsWith("source.json") ? false : true), jsonBlob(github, currentHead, path, path.endsWith("source.json") ? false : true)]);
+      if (original?.sha !== current?.sha) throw new WorkError("Candidate changed immutable Fit/request/source lineage.");
+    }
+  }
 
   const requestRecord = await jsonBlob(github, head, `changes/${workId}/request.json`);
   const request = requestSchema.parse(requestRecord!.value);
@@ -87,13 +96,13 @@ export async function inspectFitReview(github: GitHub, id: string) {
   const acceptedBy = approval.user?.login;
   const submittedAt = approval.submitted_at;
   if (!acceptedBy || !submittedAt) throw new WorkError("Verified review identity/time is incomplete.");
-  if (await github.head(branch) !== head) throw new WorkError("Work head advanced during Fit review inspection; retry from fresh GitHub state.");
+  if (await github.head(branch) !== currentHead) throw new WorkError("Work head advanced during Fit review inspection; retry from fresh GitHub state.");
 
   const acceptedFit = fitSchema.parse({ ...draft, acceptedBy, acceptedAt: new Date(submittedAt).toISOString(), provenance: "reviewed-human" });
   return {
     scope: "human-fit-review-inspection-only", workId, branch, sha: head, requestSha: draft.requestSha,
     requestDigest: packet.digest, fitDigest: createHash("sha256").update(JSON.stringify(draft)).digest("hex"),
-    pullRequest: pull.number, reviewUrl: approval.html_url, acceptedBy, acceptedAt: acceptedFit.acceptedAt,
+    pullRequest: pull.number, reviewId: approval.id, reviewUrl: approval.html_url, acceptedBy, acceptedAt: acceptedFit.acceptedAt,
     provenance: "reviewed-human", sourceCurrent, allowedPaths: acceptedFit.allowedPaths,
     humanFitReview: "verified", developerHandoffPrepared: false, checkPublished: false, qualificationPublished: false,
   };

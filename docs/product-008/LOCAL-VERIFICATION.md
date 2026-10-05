@@ -1,6 +1,28 @@
 # Local verification — Product 008 Stage A foundations
 
-## Latest continuation: exact-SHA human Fit-review inspector
+## Latest continuation: independent bounded role workers
+
+- Workspace TypeScript checks: passed, no diagnostics.
+- Isolated SPA production build and strict Node harness compilation: passed.
+- Offline harness suite: **109 passed, 0 failed, 0 skipped** (85 existing plus 20 worker/security cases and four actual temporary-Git human completion cases).
+- Tests cover concurrent independent claims/collision fallback, sticky lease loss/owner-safe release, explicit role consent/bounds, exact-head checks, acknowledged/expired human sessions, permitted remote tree/blob publication, fresh-testing new SHAs, stale heads, protected test weakening, title coverage on both Chromium projects, real-result check construction, aborted Docker subprocesses, private file/review replay boundaries, diagnosis identity/latest failures, native queue protection and exact local failure-manifest context.
+- One initial new human-completion fixture failed because its request digest did not match the real intake content digest. Corrected it to use intakePacket; reran the complete build and all 109 tests passed.
+- Git operations run against real temporary local repositories. Provider/Valkey/review responses are offline fixtures, not actual collaborator approval or live worker evidence.
+- No live role, Docker/browser/provider/write/merge/protection/deployment operation was performed by this continuation. All 22 live registry cases are unchanged and blocked, including the 15 active Stage A cases.
+- Prior uncommitted work was accounted for and preserved. No final committed control SHA or clean-tree SOW delivery is asserted.
+- Remaining implementation and external acceptance boundaries are in [STATUS.md](STATUS.md) and [WORKERS.md](WORKERS.md).
+
+## Previous continuation: Fit-only commit and trusted publication
+
+- Workspace TypeScript checks: passed, no diagnostics.
+- Isolated SPA production build and strict Node harness compilation: passed.
+- Offline harness suite: **85 passed, 0 failed, 0 skipped** (76 prior tests plus 9 Fit-write tests).
+- Added tests cover Fit-only commits, non-force expected-parent writes, idempotent replay, conflicting drafts, closed/fork work, forged blob identities, head advancement, PAT denial, role/writer ownership loss, stale/self/withdrawn approvals and stable exact-SHA review lineage/check reuse.
+- Publication tests use simulated HTTP/review records, not live GitHub or real collaborator approval.
+- No actual Fit/check was published, no Docker/browser/provider execution occurred, and no worker or SOW case was certified. All 22 registry cases remain blocked.
+- Client deferral of S3/Product 007 leaves Stage A as the active target; an approved runner control/image record is still unestablished.
+
+## Previous continuation: exact-SHA human Fit-review inspector
 
 - Workspace TypeScript checks: passed, no diagnostics.
 - Isolated SPA production build and strict Node harness compilation: passed.

@@ -14,10 +14,46 @@ import { runProtected } from "./testing/run.js";
 import { runnerSmoke } from "./testing/smoke.js";
 import { reconcileCommand, reconciliationOptions } from "./work/command.js";
 import { inspectFitReview } from "./work/fit-review.js";
+import { fitWriteCommand } from "./work/fit-command.js";
 import { IntakeError } from "./intake/index.js";
+import { actionCommand } from "./workers/actions.js";
+import { inspectIntegration, enqueueIntegration } from "./work/integration.js";
 
 const [command, ...args] = process.argv.slice(2);
 async function main() {
+  if (command === "session-action" || command === "diagnosis-review") {
+    console.log(JSON.stringify(await actionCommand(process.cwd(), command, args), null, 2));
+    return;
+  }
+  if (command === "integration-inspect" || command === "integrate") {
+    if (args.length !== (command === "integrate" ? 2 : 1) || (command === "integrate" && args[1] !== "--approve-write")) throw new Error("Integration requires work ID; enrollment additionally requires --approve-write.");
+    const config = await loadConfiguration();
+    const app = await GitHubApp.create(config);
+    await app.verify();
+    const github = new GitHub(config.GITHUB_REPOSITORY, app.api, () => app.verify());
+    if (command === "integration-inspect") {
+      console.log(JSON.stringify(await inspectIntegration(github, args[0]), null, 2));
+      return;
+    }
+    const redis = connectValkey(config.VALKEY_URL ?? "");
+    redis.on("error", () => {});
+    let lease: Lease | null = null;
+    try {
+      await redis.connect();
+      const { workIdSchema } = await import("./contracts/index.js");
+      const workId = workIdSchema.parse(args[0]);
+      lease = await Lease.acquire(redis, `integration:${config.GITHUB_REPOSITORY.replace("/", ":")}:${workId}`);
+      if (!lease) throw new Error("Another integrator holds this work item.");
+      lease.heartbeat(() => {});
+      console.log(JSON.stringify(await enqueueIntegration(github, workId, lease), null, 2));
+    } finally { if (lease) await lease.release().catch(() => {}); redis.disconnect(); }
+    return;
+  }
+  if (command === "fit-commit" || command === "fit-publish") {
+    if (args.length !== 2 || args[1] !== "--approve-write" || args[0].startsWith("--")) throw new Error("Fit writes require a draft JSON file or work ID and explicit --approve-write.");
+    await fitWriteCommand(await loadConfiguration(), command === "fit-commit" ? "commit" : "publish", args[0]);
+    return;
+  }
   if (command === "fit-review") {
     if (args.length !== 1 || args[0].startsWith("--")) throw new Error("Fit review requires one work ID.");
     const config = await loadConfiguration();
@@ -116,11 +152,12 @@ async function main() {
     return;
   }
   if (roleSchema.safeParse(command).success) {
-    console.log(JSON.stringify({ role: command, status: "blocked", reason: "Role lifecycle is not implemented in this bootstrap milestone. No lease, check, handoff, test or release was published." }));
-    process.exitCode = 2;
+    const result = await (await import("./workers/index.js")).runRole(command, args);
+    console.log(JSON.stringify(result, null, 2));
+    process.exitCode = ["completed", "no-work"].includes(String(result.status)) ? 0 : 2;
     return;
   }
-  console.log("Safi Product 008 foundation\nCommands: doctor [--ai-probe], ai-propose <input.json> --approve-cost, intake <request.json> --approve-write, intake-issue <number> --approve-write, reconcile [--once|--watch] [--after work/id] [--event file.json], fit-review <work-id>, evidence [registry] [--stage-a], discover [--pat], lease-probe\nProtected execution: runner-prepare <control-sha> <official-image@digest> --approve-reviewed-control-build; runner-smoke <record.json>; runner-test <candidate-sha> <record.json>\nReserved worker modes (currently blocked): fitter, developer, tester, triager, fixer, release\nThis milestone is not Stage A completion.");
+  console.log("Safi Product 008\nCommands: doctor [--ai-probe], ai-propose <input.json> --approve-cost, intake <request.json> --approve-write, intake-issue <number> --approve-write, reconcile [--once|--watch] [--after work/id] [--event file.json], fit-review <work-id>, fit-commit <draft.json> --approve-write, fit-publish <work-id> --approve-write, evidence [registry] [--stage-a], discover [--pat], lease-probe\nProtected execution: runner-prepare <control-sha> <official-image@digest> --approve-reviewed-control-build; runner-smoke <record.json>; runner-test <candidate-sha> <record.json>\nWorkers: fitter --paths <comma-separated-paths> --approve-write --approve-cost; developer --approve-write; tester --runner <record.json> --approve-write; triager --approve-write --approve-cost; fixer --approve-write. Optional --once (default), --watch (20 bounded cycles), --event <hint.json>, --session-minutes <1..120>.\nHuman actions: session-action <directory> <private-action.json>; diagnosis-review <directory> <approve|cancel> --approve-review\nIntegration: integration-inspect <work-id>; integrate <work-id> --approve-write (native protected merge queue only)\nRelease/S3/Product 007 are deferred. Live SOW acceptance requires actual execution, not offline checks.");
   if (command) process.exitCode = 2;
 }
 main().catch(error => { console.error(safeFailure(error)); process.exitCode = 1; });

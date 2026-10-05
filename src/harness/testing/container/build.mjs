@@ -1,4 +1,4 @@
-import { cp, mkdir, symlink } from "node:fs/promises";
+import { cp, mkdir, readdir, symlink } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { collectFiles } from "./collect.mjs";
@@ -6,7 +6,12 @@ import { collectFiles } from "./collect.mjs";
 const exec = promisify(execFile);
 await mkdir("/tmp/work", { recursive: true });
 await cp("/source", "/tmp/work", { recursive: true, dereference: false });
-await symlink("/opt/fixture/node_modules", "/tmp/work/node_modules");
+await mkdir("/tmp/work/node_modules");
+// Keep packages immutable, but let Vite write its disposable config cache locally.
+for (const entry of await readdir("/opt/fixture/node_modules")) {
+  if ([".vite", ".vite-temp", ".cache"].includes(entry)) continue;
+  await symlink(`/opt/fixture/node_modules/${entry}`, `/tmp/work/node_modules/${entry}`);
+}
 let log = "";
 try {
   const result = await exec(process.execPath, ["/opt/fixture/node_modules/vite/bin/vite.js", "build", "--outDir", "/output/dist", "--emptyOutDir"], { cwd: "/tmp/work", timeout: 300000, maxBuffer: 2 * 1024 * 1024, env: { PATH: "/usr/local/bin:/usr/bin:/bin", HOME: "/tmp", NODE_ENV: "production", CI: "1" } });
