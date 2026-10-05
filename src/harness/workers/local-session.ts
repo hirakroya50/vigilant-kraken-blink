@@ -72,7 +72,7 @@ export async function runHuman(ctx: RoleContext) {
     });
     const session = new HumanSession(handoff);
     await writeFile(join(directory, "handoff.json"), JSON.stringify(handoff, null, 2) + "\n", { flag: "wx", mode: 0o600 });
-    ctx.log("human-handoff", "awaiting-acknowledgement", { directory, checkout, sessionId: handoff.sessionId, deadline: handoff.deadline });
+    ctx.log("human-handoff", "waiting-human", { directory, checkout, sessionId: handoff.sessionId, deadline: handoff.deadline });
     while (true) {
       signal.throwIfAborted(); session.assertActive(); await ctx.assertActive();
       if (await github.head(target.branch) !== target.sha) throw new WorkError("Branch advanced while awaiting human action; session cancelled.");

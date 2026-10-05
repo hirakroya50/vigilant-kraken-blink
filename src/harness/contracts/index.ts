@@ -9,8 +9,17 @@ export const fitSchema = z.object({ version: z.literal(1), workId: workIdSchema,
 export const fitDraftRecordSchema = fitSchema.omit({ acceptedBy: true, acceptedAt: true, provenance: true }).strict();
 export const diagnosisSchema = z.object({ version: z.literal(1), workId: workIdSchema, failedSha: shaSchema, provenance: z.enum(["ai-reviewed", "reviewed-human"]), failureCheckUrls: z.array(z.string().url()).min(1), cause: z.string().min(1).max(6000), repair: z.string().min(1).max(6000), affectedFiles: z.array(z.string()).min(1), confidence: z.enum(["low", "medium", "high"]) }).strict();
 export const checkSchema = z.object({ name: z.string().regex(/^safi\/[a-z-]+$/), sha: shaSchema, conclusion: z.enum(["success", "failure", "neutral", "cancelled"]), title: z.string().min(1).max(200), summary: z.string().min(1).max(60000), evidenceId: z.string().min(1).max(200) }).strict();
-export const evidenceSchema = z.object({ caseId: z.number().int().min(1).max(22), status: z.enum(["passed", "failed", "blocked", "not-run"]), timestamp: z.string().datetime(), workId: workIdSchema.optional(), branch: z.string().optional(), sha: shaSchema.optional(), workers: z.array(z.string()), checkUrls: z.array(z.string().url()), logs: z.array(z.string()), artifacts: z.array(z.string()), reason: z.string() }).strict().superRefine((entry, ctx) => {
-  if (entry.status === "passed" && (!entry.sha || !entry.workId || !entry.branch || !entry.workers.length || !entry.checkUrls.length || !entry.logs.length)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Live passes require exact SHA, work/branch, workers, check URLs and logs." });
+const evidenceStatusSchema = z.enum(["passed", "failed", "blocked", "not-run", "deferred"]);
+const evidenceExtrasSchema = {
+  acceptanceRunId: z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/).optional(),
+  sessionIds: z.array(z.string().min(1).max(200)).max(50).optional(),
+  observedResult: z.string().min(1).max(4000).optional(),
+  failureRecovery: z.array(z.string().min(1).max(2000)).max(30).optional(),
+  leaseEvents: z.array(z.string().min(1).max(1000)).max(100).optional(),
+  runner: z.object({ controlSha: shaSchema, controlDigest: z.string().regex(/^[a-f0-9]{64}$/), testDigest: z.string().regex(/^[a-f0-9]{64}$/), dependencyDigest: z.string().regex(/^[a-f0-9]{64}$/), imageId: z.string().regex(/^sha256:[a-f0-9]{64}$/) }).strict().optional(),
+};
+export const evidenceSchema = z.object({ caseId: z.number().int().min(1).max(22), status: evidenceStatusSchema, timestamp: z.string().datetime(), workId: workIdSchema.optional(), branch: z.string().optional(), sha: shaSchema.optional(), workers: z.array(z.string()), checkUrls: z.array(z.string().url()), logs: z.array(z.string()), artifacts: z.array(z.string()), reason: z.string(), ...evidenceExtrasSchema }).strict().superRefine((entry, ctx) => {
+  if (entry.status === "passed" && (!entry.sha || !entry.workId || !entry.branch || !entry.workers.length || !entry.sessionIds?.length || !entry.acceptanceRunId || !entry.checkUrls.length || !entry.logs.length || !entry.artifacts.length || !entry.observedResult)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Live passes require exact SHA, work/branch, worker/session identities, run ID, check URLs, observed result, logs and artifacts." });
 });
 export const protectedPaths = ["src/harness/", "src/tests/", "changes/", ".github/", "package.json", "package-lock.json", "playwright.config.ts", "tsconfig", "vite.config.ts", "AI_RULES.md"];
 export function assertPermittedDiff(paths: string[], allowedPaths: string[]) {

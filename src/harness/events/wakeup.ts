@@ -2,6 +2,7 @@ import { open } from "node:fs/promises";
 import { z } from "zod";
 import { WorkError } from "../work/records.js";
 
+export type Wakeup = { event: "issues" | "pull_request" | "push" | "check_run" | "workflow_run"; deliveryId: string; repository: string; authority: "untrusted-wakeup-only"; writeAuthorized: false };
 const envelopeSchema = z.object({
   event: z.enum(["issues", "pull_request", "push", "check_run", "workflow_run"]),
   deliveryId: z.string().min(1).max(128).regex(/^[a-zA-Z0-9-]+$/).refine(value => !/[\r\n]/.test(value)),

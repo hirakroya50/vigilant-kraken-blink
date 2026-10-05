@@ -34,9 +34,9 @@ Expired/cancelled/interrupted checkouts are retained, not force-deleted. They ne
 
 ## Events and runtime preparation
 
-Workers accept repository-scoped event-file hints and independently perform fresh bounded discovery. Hints never provide authenticated approval, authoritative SHAs or write instructions. Authenticated event dispatch is not installed. Normal read-only discovery observes bounded provider backoff; failed executions exit for explicit reconciliation rather than retrying writes.
+Workers accept repository-scoped event-file hints and independently perform fresh bounded discovery. Hints never provide authenticated approval, authoritative SHAs or write instructions. The webhook adapter now validates GitHub HMAC-SHA256, delivery IDs, event/repository allowlists and a 256 KiB bound; dispatch claims each delivery once and emits only an untrusted wakeup. A production listener/provider installation still requires live operator setup. Normal read-only discovery observes bounded provider backoff; failed executions exit for explicit reconciliation rather than retrying writes.
 
-An authorized operator must fetch exact candidates into the trusted repository before source/worktree/runner use. Automatic authorized synchronization is not implemented. Existing local Docker records must be reviewed against the newly committed current control; never infer freshness from their mere existence.
+Worker candidate preparation now uses repository-scoped exact-SHA synchronization. It validates the configured credential-free GitHub remote, current work-branch head, fetched commit object and optional ancestry, with Git hooks/configuration/fsmonitor/credential helpers/prompts disabled. Existing local Docker records must be reviewed against the newly committed current control; never infer freshness from their mere existence.
 
 ## Durable acceptance evidence
 

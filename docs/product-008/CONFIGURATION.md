@@ -17,6 +17,7 @@ Use the Git-ignored `.env` on the trusted runner, following `.env.example`. Envi
 - `SAFI_GITHUB_APP_PRIVATE_KEY_PATH`: RSA PEM outside the repository, owned by the current user, with no group/other access (0600 or 0400). Symlinks resolve before containment checks. A client secret is not a private key.
 - `GITHUB_TOKEN`: optional limited development discovery fallback only; never a qualification credential.
 - `VALKEY_URL`: redis/rediss URL; production connectivity should use TLS. Never expose the URL in evidence.
+- `SAFI_WEBHOOK_SECRET`: optional GitHub HMAC secret for the bounded webhook adapter; never print or expose it through browser variables.
 - `OPENAI_API_KEY`, `OPENAI_MODEL`: provider key and model identifier. No privileged values belong in `VITE_` variables, source, GitHub comments, or chat.
 
 `.pem` and `.key` files are ignored as defense in depth, not permission to keep App keys inside the repository.

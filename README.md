@@ -42,7 +42,7 @@ Manual/issue intake requires explicit write consent and creates/reconciles a req
 
 `ai-propose` remains an unapproved local draft operation. Role Fit publication requires independent exact-head GitHub review; diagnosis requires explicit local human review. Test qualification requires every accepted assertion to map to an actually passing protected test title on desktop/mobile Chromium. Read [configuration](docs/product-008/CONFIGURATION.md) and [AI limits](docs/product-008/AI.md).
 
-**Verified: isolated production fixture/harness build and 109 offline tests passed. Live Stage A: 0/15 recorded passes.** Automatic authorized candidate synchronization, authenticated event dispatch, trusted merge-group/main gate execution, actual useful five-role concurrency and clean committed SOW delivery remain unresolved. The existing pnpm lockfile remains; committed npm lockfile migration is pending.
+**Verified: isolated production fixture/harness build and 109 offline tests passed. Live Stage A: 0/15 recorded passes.** Exact-SHA synchronization, HMAC/replay-safe wakeup dispatch, active-scope evidence transitions/reporting, and bounded merge-group/main verification are implemented and covered by offline controls; live provider execution, useful five-role concurrency, and clean committed SOW delivery remain unresolved. The existing pnpm lockfile is the frozen dependency contract; no npm lockfile is claimed.
 
 ## Product 008 documentation
 

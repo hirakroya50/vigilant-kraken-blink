@@ -16,6 +16,7 @@ const schema = z.object({
   GITHUB_TOKEN: optional,
   VALKEY_URL: z.preprocess(value => value === "" ? undefined : value, z.string().url().refine(value => ["redis:", "rediss:"].includes(new URL(value).protocol)).optional()),
   OPENAI_API_KEY: optional,
+  SAFI_WEBHOOK_SECRET: z.preprocess(value => value === "" ? undefined : value, z.string().min(1).max(256).optional()),
   OPENAI_MODEL: z.string().regex(/^[A-Za-z0-9._:-]{1,100}$/).default("gpt-4.1"),
 });
 export type Configuration = z.infer<typeof schema>;

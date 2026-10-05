@@ -14,6 +14,7 @@ import { discoverEligible, type WorkTarget } from "./discovery.js";
 import { workerOptions, type WorkerRole } from "./options.js";
 import { runFitter, runTester, runTriager, type RoleContext } from "./roles.js";
 import { runHuman } from "./local-session.js";
+import { synchronizeCandidate } from "../git/sync.js";
 
 export { discoverEligible, claimNext } from "./discovery.js";
 export { workerOptions } from "./options.js";
@@ -53,8 +54,16 @@ export async function runRole(roleName: string, args: string[] = [], repository 
       let didWork = false;
       for (const target of targets) {
         controller.signal.throwIfAborted();
+        try {
+          await synchronizeCandidate({ repository: resolve(repository), expectedRepository: config.GITHUB_REPOSITORY, branch: target.branch, sha: target.sha });
+          log(target, "synchronize", "validated");
+        } catch (error) {
+          log(target, "synchronize", "blocked", { reason: safeFailure(error) });
+          continue;
+        }
         const candidate = await Lease.acquire(redis, `${role}:${config.GITHUB_REPOSITORY.replace("/", ":")}:${target.sha}`);
         if (!candidate) { log(target, "claim", "collision-skipped"); continue; }
+        log(target, "claim", "claimed", { leaseOwner: candidate.owner });
         let writer: Lease | null = null;
         const active = new AbortController();
         const abort = () => active.abort();

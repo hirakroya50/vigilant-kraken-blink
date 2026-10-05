@@ -78,6 +78,7 @@
   },
   "name": "vite_react_shadcn_ts",
   "private": true,
+  "packageManager": "pnpm@10.12.4",
   "scripts": {
     "build": "npm run build:fixture && npm run build:harness && npm run test:harness",
     "build:fixture": "vite build",

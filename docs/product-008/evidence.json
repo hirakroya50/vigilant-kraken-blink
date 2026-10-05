@@ -1,222 +1,222 @@
 [
   {
+    "artifacts": [],
     "caseId": 1,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Work item is branch: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Work item is branch: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 2,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Candidate is exact SHA: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Candidate is exact SHA: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 3,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "New commit is new candidate: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "New commit is new candidate: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 4,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Parallel Fitter/Developer: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Parallel Fitter/Developer: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 5,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Parallel Tester/Triager: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Parallel Tester/Triager: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 6,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Parallel Fixer: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Parallel Fixer: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 7,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Lease collision: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Lease collision: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 8,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Lease recovery: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Lease recovery: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 9,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Tester read-only: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Tester read-only: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 10,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Triager read-only: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Triager read-only: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 11,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Stale triage protection: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Stale triage protection: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 12,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Fix produces new candidate: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Fix produces new candidate: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 13,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Protected test: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Protected test: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 14,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Artifact matches SHA: Stage B deferred; S3, Product 007 contract, and hostname unavailable."
+    "reason": "Artifact matches SHA: Stage B deferred; S3, Product 007 contract, and hostname unavailable.",
+    "status": "deferred",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 15,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Artifact immutability: Stage B deferred; S3, Product 007 contract, and hostname unavailable."
+    "reason": "Artifact immutability: Stage B deferred; S3, Product 007 contract, and hostname unavailable.",
+    "status": "deferred",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 16,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Production promotion: Stage B deferred; S3, Product 007 contract, and hostname unavailable."
+    "reason": "Production promotion: Stage B deferred; S3, Product 007 contract, and hostname unavailable.",
+    "status": "deferred",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 17,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Live verification: Stage B deferred; S3, Product 007 contract, and hostname unavailable."
+    "reason": "Live verification: Stage B deferred; S3, Product 007 contract, and hostname unavailable.",
+    "status": "deferred",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 18,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Rollback: Stage B deferred; S3, Product 007 contract, and hostname unavailable."
+    "reason": "Rollback: Stage B deferred; S3, Product 007 contract, and hostname unavailable.",
+    "status": "deferred",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 19,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Failed artifact preserved: Stage B deferred; S3, Product 007 contract, and hostname unavailable."
+    "reason": "Failed artifact preserved: Stage B deferred; S3, Product 007 contract, and hostname unavailable.",
+    "status": "deferred",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 20,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Development during deployment: Stage B deferred; S3, Product 007 contract, and hostname unavailable."
+    "reason": "Development during deployment: Stage B deferred; S3, Product 007 contract, and hostname unavailable.",
+    "status": "deferred",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 21,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "Valkey loss preserves truth: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "Valkey loss preserves truth: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   },
   {
+    "artifacts": [],
     "caseId": 22,
-    "status": "blocked",
-    "timestamp": "2026-09-30T22:05:44.848Z",
-    "workers": [],
     "checkUrls": [],
     "logs": [],
-    "artifacts": [],
-    "reason": "All five running: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable."
+    "reason": "All five running: Live GitHub/Valkey runner evidence and completed worker lifecycles unavailable.",
+    "status": "blocked",
+    "timestamp": "2026-09-30T22:05:44.848Z",
+    "workers": []
   }
 ]

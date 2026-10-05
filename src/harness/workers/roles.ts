@@ -130,7 +130,7 @@ export async function runTriager(ctx: RoleContext) {
   const sessionId = randomUUID(), identity = digest(summary), deadline = Date.now() + ctx.options.sessionMinutes * 60000;
   const review = { version: 1, sessionId, workId: ctx.target.workId, sha: ctx.target.sha, digest: identity, deadline: new Date(deadline).toISOString(), diagnosis, proposal, operatorBoundary: "same-os-user-local-human" };
   await writeFile(join(directory, "diagnosis.json"), JSON.stringify(review, null, 2) + "\n", { mode: 0o600, flag: "wx" });
-  ctx.log("diagnosis-draft", "awaiting-human-review", { directory, sessionId, digest: identity, deadline: review.deadline });
+  ctx.log("diagnosis-draft", "waiting-human", { directory, sessionId, digest: identity, deadline: review.deadline });
   if (!await waitDiagnosisReview(ctx, directory, sessionId, identity, deadline)) return { status: "cancelled", implementationModified: false, directory };
   const currentFailures = async () => {
     await revalidate(ctx);

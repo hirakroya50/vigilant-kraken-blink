@@ -22,7 +22,7 @@ export function parseTree(raw: string) {
   });
 }
 async function gitBytes(repository: string, args: string[], maxBuffer = 8 * 1024 * 1024) {
-  const result = await exec("git", ["-c", "core.hooksPath=/dev/null", "-c", "core.fsmonitor=false", "-C", resolve(repository), ...args], { encoding: "buffer", timeout: 30000, maxBuffer, env: { PATH: process.env.PATH, HOME: process.env.HOME, GIT_TERMINAL_PROMPT: "0" } });
+  const result = await exec("git", ["-c", "core.hooksPath=/dev/null", "-c", "core.fsmonitor=false", "-c", "credential.helper=", "-c", "protocol.ext.allow=never", "-c", "protocol.file.allow=never", "-C", resolve(repository), ...args], { encoding: "buffer", timeout: 30000, maxBuffer, env: { PATH: process.env.PATH, HOME: process.env.HOME, GIT_CONFIG_NOSYSTEM: "1", GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_SYSTEM: "/dev/null", GIT_ATTR_NOSYSTEM: "1", GIT_TERMINAL_PROMPT: "0", GIT_OPTIONAL_LOCKS: "0" } });
   return result.stdout;
 }
 export async function readSnapshot(repository: string, sha: string): Promise<SnapshotFile[]> {

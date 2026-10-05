@@ -9,6 +9,8 @@ import { safeFailure } from "./logging/index.js";
 import { proposeCommand } from "./ai/propose-command.js";
 import { intakeCommand, issueIntakeCommand } from "./intake/command.js";
 import { inspectRegistry } from "./evidence/registry.js";
+import { activeScopeReport, renderAcceptanceReport } from "./evidence/acceptance.js";
+import { dispatchWebhook, MemoryDeliveryStore, boundedWakeup } from "./events/dispatch.js";
 import { prepareRunner, readRunnerRecord } from "./testing/prepare.js";
 import { runProtected } from "./testing/run.js";
 import { runnerSmoke } from "./testing/smoke.js";
@@ -111,9 +113,29 @@ async function main() {
     if (paths.length > 1 || paths.some(arg => arg.startsWith("--")) || args.filter(arg => arg === "--stage-a").length > 1) throw new Error("Unknown evidence argument.");
     const registry = JSON.parse(await readFile(paths[0] ?? "docs/product-008/evidence.json", "utf8"));
     const report = inspectRegistry(registry, stageA ? "A" : "all");
-    console.log(JSON.stringify({ scope: report.scope, verification: report.verification, total: report.total, recordedPasses: report.recordedPasses }));
+    console.log(JSON.stringify({ scope: report.scope, verification: report.verification, total: report.total, recordedPasses: report.recordedPasses, deferredCases: report.deferredCases }));
     console.table(report.entries.map(entry => ({ case: entry.caseId, status: entry.status, reason: entry.reason })));
     process.exitCode = report.allRecordedPassed ? 0 : 2;
+    return;
+  }
+  if (command === "acceptance-status" || command === "acceptance-report") {
+    if (args.length > 1) throw new Error("Acceptance reporting accepts at most one registry path.");
+    const registry = JSON.parse(await readFile(args[0] ?? "docs/product-008/evidence.json", "utf8"));
+    const report = activeScopeReport(registry);
+    if (command === "acceptance-status") {
+      console.log(JSON.stringify({ scope: "stage-A", activePassed: report.activePassed, activeTotal: report.activeTotal, deferredCases: report.deferredCases, verification: "registry-validation-only; live evidence is not independently verified" }, null, 2));
+    } else {
+      console.log(renderAcceptanceReport(registry, { generatedAt: new Date().toISOString(), commands: ["pnpm run typecheck", "pnpm run build", "pnpm run harness -- doctor", "pnpm run harness -- lease-probe"] }));
+    }
+    process.exitCode = report.activePassed === report.activeTotal ? 0 : 2;
+    return;
+  }
+  if (command === "webhook-dispatch") {
+    if (args.length !== 4) throw new Error("Webhook dispatch requires payload file, event name, delivery ID and GitHub signature.");
+    const config = await loadConfiguration();
+    if (!config.SAFI_WEBHOOK_SECRET) throw new Error("SAFI_WEBHOOK_SECRET is required for webhook dispatch.");
+    const result = await dispatchWebhook({ body: await readFile(args[0]), headers: { event: args[1], deliveryId: args[2], signature: args[3] }, secret: config.SAFI_WEBHOOK_SECRET, repository: config.GITHUB_REPOSITORY }, new MemoryDeliveryStore(), async event => console.log(JSON.stringify(boundedWakeup(event))));
+    console.log(JSON.stringify(result));
     return;
   }
   if (command === "discover") {
@@ -157,7 +179,7 @@ async function main() {
     process.exitCode = ["completed", "no-work"].includes(String(result.status)) ? 0 : 2;
     return;
   }
-  console.log("Safi Product 008\nCommands: doctor [--ai-probe], ai-propose <input.json> --approve-cost, intake <request.json> --approve-write, intake-issue <number> --approve-write, reconcile [--once|--watch] [--after work/id] [--event file.json], fit-review <work-id>, fit-commit <draft.json> --approve-write, fit-publish <work-id> --approve-write, evidence [registry] [--stage-a], discover [--pat], lease-probe\nProtected execution: runner-prepare <control-sha> <official-image@digest> --approve-reviewed-control-build; runner-smoke <record.json>; runner-test <candidate-sha> <record.json>\nWorkers: fitter --paths <comma-separated-paths> --approve-write --approve-cost; developer --approve-write; tester --runner <record.json> --approve-write; triager --approve-write --approve-cost; fixer --approve-write. Optional --once (default), --watch (20 bounded cycles), --event <hint.json>, --session-minutes <1..120>.\nHuman actions: session-action <directory> <private-action.json>; diagnosis-review <directory> <approve|cancel> --approve-review\nIntegration: integration-inspect <work-id>; integrate <work-id> --approve-write (native protected merge queue only)\nRelease/S3/Product 007 are deferred. Live SOW acceptance requires actual execution, not offline checks.");
+  console.log("Safi Product 008\nCommands: doctor [--ai-probe], ai-propose <input.json> --approve-cost, intake <request.json> --approve-write, intake-issue <number> --approve-write, reconcile [--once|--watch] [--after work/id] [--event file.json], fit-review <work-id>, fit-commit <draft.json> --approve-write, fit-publish <work-id> --approve-write, evidence [registry] [--stage-a], acceptance-status [registry], acceptance-report [registry], webhook-dispatch <payload.json> <event> <delivery-id> <sha256=signature>, discover [--pat], lease-probe\nProtected execution: runner-prepare <control-sha> <official-image@digest> --approve-reviewed-control-build; runner-smoke <record.json>; runner-test <candidate-sha> <record.json>\nWorkers: fitter --paths <comma-separated-paths> --approve-write --approve-cost; developer --approve-write; tester --runner <record.json> --approve-write; triager --approve-write --approve-cost; fixer --approve-write. Optional --once (default), --watch (20 bounded cycles), --event <hint.json>, --session-minutes <1..120>.\nHuman actions: session-action <directory> <private-action.json>; diagnosis-review <directory> <approve|cancel> --approve-review\nIntegration: integration-inspect <work-id>; integrate <work-id> --approve-write (native protected merge queue only)\nRelease/S3/Product 007 are deferred. Live SOW acceptance requires actual execution, not offline checks.");
   if (command) process.exitCode = 2;
 }
 main().catch(error => { console.error(safeFailure(error)); process.exitCode = 1; });
